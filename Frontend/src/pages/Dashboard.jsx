@@ -15,6 +15,7 @@ const Dashboard = () => {
       </div>
       <div>
         <TransactionCard />
+        
       </div>
       <div className="flex flex-col justify-around mb-4 w-full md:flex-row">
         <div className="flex-[0.6]">

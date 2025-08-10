@@ -36,7 +36,7 @@ const Navbar = () => {
 
       <div className="flex items-center gap-4">
         <button className="bg-gray-700 hover:bg-gray text-white font-semibold px-4 py-2 rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent animate-fade-in-up">
-          Add Transaction
+          Add Transaction 
         </button>
         <span
           onClick={()=>{navigate('/profile')}}
