@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../context/user.context";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const {openAddTransactionForm, setOpenAddTransactionForm} = useContext(UserContext);
   return (
     <nav className="w-full bg-dark sticky top-0 shadow-lg py-3 px-6 flex items-center justify-between animate-fade-in border-b border-gray">
       <div className="flex items-center gap-2">
@@ -35,7 +37,7 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-4">
-        <button className="bg-gray-700 hover:bg-gray text-white font-semibold px-4 py-2 rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent animate-fade-in-up">
+        <button onClick={()=> setOpenAddTransactionForm(true)} className="bg-gray-700 hover:bg-gray text-white font-semibold px-4 py-2 rounded-lg shadow-md transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent animate-fade-in-up">
           Add Transaction 
         </button>
         <span

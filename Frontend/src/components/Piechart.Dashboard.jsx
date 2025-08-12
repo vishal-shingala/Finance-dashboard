@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -6,10 +6,12 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { UserContext } from "../context/User.context";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const PiechartDashboard = ({ income = 50000, expense = 10000 }) => {
+const PiechartDashboard = () => {
+  const {income, expense} = useContext(UserContext)
   const data = {
     labels: ["Income", "Expense"],
     datasets: [

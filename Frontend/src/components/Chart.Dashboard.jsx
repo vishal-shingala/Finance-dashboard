@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useContext } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -9,11 +9,13 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { UserContext } from "../context/User.context";
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
-const ChartDashboard = ({ expensesPerDay = [1200, 2600, 8100, 7400, 201, 2122], income = [2555, 516, 5196, 16,56] }) => {
+const ChartDashboard = () => {
   const chartRef = useRef(null);
+  const {incomeDetail, expenseDetail}  = useContext(UserContext)
 
   useEffect(() => {
     const chart = chartRef.current;
@@ -22,18 +24,14 @@ const ChartDashboard = ({ expensesPerDay = [1200, 2600, 8100, 7400, 201, 2122], 
     }
   }, []);
 
-  if (!expensesPerDay.length || !income.length) {
-    return <div className="text-white text-center">No data available</div>;
-  }
-
-  const labels = expensesPerDay.map((_, i) => `Day ${i + 1}`);
+  const labels = incomeDetail.map((_, i) => `Day ${i + 1}`);
 
   const data = {
     labels,
     datasets: [
       {
         label: "Expenses",
-        data: expensesPerDay,
+        data: expenseDetail,
         borderColor: "#ef4444",
         backgroundColor: "#ef4444",
         tension: 0.4,
@@ -43,7 +41,7 @@ const ChartDashboard = ({ expensesPerDay = [1200, 2600, 8100, 7400, 201, 2122], 
       },
       {
         label: "Income",
-        data: income,
+        data: incomeDetail,
         borderColor: "#22c55e",
         backgroundColor: "#22c55e",
         tension: 0.4,

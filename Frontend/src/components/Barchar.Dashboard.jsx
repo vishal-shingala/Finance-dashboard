@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Chart as ChartJS,
   BarElement,
@@ -8,6 +8,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { UserContext } from "../context/User.context";
 
 ChartJS.register(
   BarElement,
@@ -18,12 +19,13 @@ ChartJS.register(
 );
 
 const BarChartDashboard = () => {
+  const {categoryExpense, category} = useContext(UserContext)
   const data = {
-    labels: ["Food", "Transport", "Rent", "Entertainment", "Shopping", "Others"],
+    labels: category,
     datasets: [
       {
         label: "Expenses",
-        data: [3000, 1500, 6000, 1200, 2200, 800],
+        data:categoryExpense,
         backgroundColor: "#ef4444", // Red
         borderRadius: 6,
         barThickness: 40,

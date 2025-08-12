@@ -1,36 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { UserContext } from "../context/User.context";
 
 const History = () => {
-  const [transactions, setTransactions] = useState([]);
-
-  const addTransaction = (tx) => {
-    setTransactions((prev) => {
-      const updated = [tx, ...prev];
-      return updated.slice(0, 5);
-    });
-  };
-
-  const handleAddSample = () => {
-    const sample = {
-      id: Date.now(),
-      amount: Math.random() > 0.5 ? 120 : -80,
-      category: "Utilities",
-      date: new Date().toLocaleDateString(),
-      time: new Date().toLocaleTimeString(),
-    };
-    addTransaction(sample);
-  };
+  const {transactions} = useContext(UserContext)
 
   return (
     <div className="bg-dark text-white rounded-lg p-4 w-full h-[25rem] flex flex-col justify-between shadow-md">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-semibold">Transaction History</h2>
-        <button
-          onClick={handleAddSample}
-          className="bg-blue-600 hover:bg-blue-700 px-3 py-1 text-sm rounded"
-        >
-          + Add
-        </button>
       </div>
 
       <div className="flex-1 space-y-2 overflow-hidden">
