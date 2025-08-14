@@ -1,9 +1,39 @@
 import React from "react";
 import "../index.css"; // Make sure custom animations like animate-blob and animation-delay exist
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+
 
 const Login = () => {
   const navigate = useNavigate();
+
+  const loginMutation = useMutation({
+    mutationFn: async (data) => {
+      const res = await axios.post("http://localhost:5000/api/login", data);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      console.log("Login successful:", data);
+      
+    },
+    onError: (error) => {
+      console.error("Login failed:", error);
+      alert(error.response?.data?.message || "Login failed");
+    },
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    loginMutation.mutate(data);
+  };
+
   return (
     <div className="relative w-full h-screen bg-gray-900 overflow-hidden flex items-center justify-center px-4">
       {/* Background animation blobs */}
@@ -18,34 +48,67 @@ const Login = () => {
           FinDash
         </h1>
 
-        <h2 className="text-2xl font-semibold text-center mb-6">Welcome Back</h2>
+        <h2 className="text-2xl font-semibold text-center mb-6">
+          Welcome Back
+        </h2>
 
-        <form>
+        {/* Form */}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Email */}
           <label className="block mb-2 text-sm">Email</label>
           <input
             type="email"
-            className="w-full px-4 py-2 mb-4 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full px-4 py-2 mb-1 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
             placeholder="you@example.com"
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^\S+@\S+$/i,
+                message: "Enter a valid email address",
+              },
+            })}
           />
+          {errors.email && (
+            <p className="text-red-400 text-xs mb-3">{errors.email.message}</p>
+          )}
 
+          {/* Password */}
           <label className="block mb-2 text-sm">Password</label>
           <input
             type="password"
-            className="w-full px-4 py-2 mb-6 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full px-4 py-2 mb-1 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
             placeholder="********"
+            {...register("password", {
+              required: "Password is required",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters",
+              },
+            })}
           />
+          {errors.password && (
+            <p className="text-red-400 text-xs mb-3">
+              {errors.password.message}
+            </p>
+          )}
 
+          {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded font-semibold transition duration-300"
+            disabled={isSubmitting}
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded font-semibold transition duration-300 disabled:opacity-50"
           >
-            Login
+            {isSubmitting ? "Logging in..." : "Login"}
           </button>
         </form>
 
+        {/* Register link */}
         <p className="mt-4 text-sm text-center">
           Don’t have an account?{" "}
-          <span onClick={()=> navigate('/register')} className="text-purple-400 hover:underline hover:cursor-pointer">
+          <span
+            onClick={() => navigate("/register")}
+            className="text-purple-400 hover:underline hover:cursor-pointer"
+          >
             Register
           </span>
         </p>

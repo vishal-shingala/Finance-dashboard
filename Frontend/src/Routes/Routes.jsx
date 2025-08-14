@@ -4,7 +4,7 @@ import Dashboard from '../pages/Dashboard';
 import Profile from '../pages/Profile';
 import Register from '../pages/Register';   
 import { useContext } from 'react';
-import { UserContext } from '../context/user.context';
+import { UserContext } from '../context/User.context';
 
 function PageRouters(){
     const {currUser} = useContext(UserContext);
