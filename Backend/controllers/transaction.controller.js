@@ -11,7 +11,7 @@ const transaction = asynchandler(async (req, res) => {
     });
   }
   
-  const userId = req.user.id;
+  const userId = req.user;
   const newTransaction = await Transaction.create({
     userId,
     amount,

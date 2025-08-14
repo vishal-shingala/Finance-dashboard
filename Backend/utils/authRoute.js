@@ -1,6 +1,8 @@
+import { verifyToken } from "./token.js";
+
 const authRoute = (req, res, next) => {
     try {
-        const token = req.cookies.token;
+        const token = req.cookies.jwt;
         if (!token) {
             return res.status(401).json({ message: "Token not available" });
         }
@@ -9,8 +11,10 @@ const authRoute = (req, res, next) => {
         if (!decoded) {
             return res.status(401).json({ message: "Token verification failed" });
         }
-
-        req.user = decoded;
+        console.log("Token verified");
+        
+        req.user = decoded.value;
+        console.log("User ID:", req.user);
         next(); 
     } catch (error) {
         return res.status(500).json({ message: "Unauthorized", error: error.message });

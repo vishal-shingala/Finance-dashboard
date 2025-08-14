@@ -1,4 +1,5 @@
 import User from "../model/user.model.js";
+import asynchandler from "../utils/asynchandler.js";
 import { generateToken } from "../utils/token.js";
 
 const register = asynchandler(async (req, res) => {
@@ -20,7 +21,9 @@ const register = asynchandler(async (req, res) => {
     return res.status(500).json({ message: "Token generation failed." });
   }
 
-  res.status(201).json({ message: "User registered successfully.", user });
+  const userDetail = await User.findOne({ email }).select("-password");
+
+  res.status(201).json({ message: "User registered successfully.", userDetail });
 });
 
 export default register;
