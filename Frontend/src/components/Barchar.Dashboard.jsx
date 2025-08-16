@@ -19,13 +19,21 @@ ChartJS.register(
 );
 
 const BarChartDashboard = () => {
-  const {categoryExpense, category} = useContext(UserContext)
+  const {categoryExpense} = useContext(UserContext)
+  const category =[];
+  const expnese = [];
+  
+  categoryExpense.forEach(obj => {
+    category.push(obj.categoryName);
+    expnese.push(obj.totalExpense)
+  });
+
   const data = {
     labels: category,
     datasets: [
       {
         label: "Expenses",
-        data:categoryExpense,
+        data:expnese,
         backgroundColor: "#ef4444", // Red
         borderRadius: 6,
         barThickness: 40,

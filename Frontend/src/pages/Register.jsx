@@ -1,9 +1,42 @@
-import React from "react";
-import "../index.css"; // Make sure your animation classes are included here
+import React, { useContext } from "react";
+import "../index.css";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/User.context";
+import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const Register = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { setCurrUser } = useContext(UserContext);
+
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
+  const registerMutation = useMutation({
+    mutationFn: async (formData) => {
+      const res = await axios.post("http://localhost:3000/api/v1/register", formData, {
+        withCredentials:true
+      });
+      return res.data;
+    },
+    onSuccess: (data) => {
+      setCurrUser(data); 
+      toast.success("Account created successfully!", { position: "top-center" });
+      navigate("/"); 
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "Registration failed", { position: "top-center" });
+    }
+  });
+
+  // handle form submit
+  const onSubmit = (data) => {
+    console.log(data);
+    
+    registerMutation.mutate(data);
+  };
+
   return (
     <div className="relative w-full h-screen bg-gray-900 overflow-hidden flex items-center justify-center px-4">
       {/* Animated Blobs */}
@@ -13,46 +46,53 @@ const Register = () => {
 
       {/* Registration Card */}
       <div className="z-10 bg-white/10 backdrop-blur-lg shadow-xl rounded-xl p-8 max-w-md w-full text-white">
-        {/* FinDash Animated Logo */}
+        {/* FinDash Logo */}
         <h1 className="text-5xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 text-transparent bg-clip-text animate-pulse text-center mb-6 tracking-widest">
           FinDash
         </h1>
 
         <h2 className="text-2xl font-semibold text-center mb-6">Create Account</h2>
 
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <label className="block mb-2 text-sm">Name</label>
           <input
             type="text"
-            className="w-full px-4 py-2 mb-4 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            {...register("username", { required: "Name is required" })}
+            className="w-full px-4 py-2 mb-1 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
             placeholder="Your Name"
           />
+          {errors.name && <p className="text-red-400 text-sm mb-3">{errors.name.message}</p>}
 
           <label className="block mb-2 text-sm">Email</label>
           <input
             type="email"
-            className="w-full px-4 py-2 mb-4 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            {...register("email", { required: "Email is required" })}
+            className="w-full px-4 py-2 mb-1 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
             placeholder="you@example.com"
           />
+          {errors.email && <p className="text-red-400 text-sm mb-3">{errors.email.message}</p>}
 
           <label className="block mb-2 text-sm">Password</label>
           <input
             type="password"
-            className="w-full px-4 py-2 mb-6 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            {...register("password", { required: "Password is required" })}
+            className="w-full px-4 py-2 mb-1 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
             placeholder="********"
           />
+          {errors.password && <p className="text-red-400 text-sm mb-3">{errors.password.message}</p>}
 
           <button
             type="submit"
             className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded font-semibold transition duration-300"
+            disabled={registerMutation.isPending}
           >
-            Register
+            {registerMutation.isPending ? "Registering..." : "Register"}
           </button>
         </form>
 
         <p className="mt-4 text-sm text-center hover:cursor-pointer">
           Already have an account?{" "}
-          <span onClick={()=> navigate('/login')} className="text-purple-400 hover:underline">
+          <span onClick={() => navigate('/login')} className="text-purple-400 hover:underline">
             Login
           </span>
         </p>

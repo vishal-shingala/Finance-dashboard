@@ -1,5 +1,6 @@
 import { generateToken } from "../utils/token.js";
 import User from "../model/user.model.js";
+import asynchandler from "../utils/asynchandler.js";
 
 const loginUser = async (req, res) => {
   try {
@@ -36,4 +37,12 @@ const loginUser = async (req, res) => {
   }
 };
 
-export default loginUser;
+const checkAuthUser = (req, res) =>{
+  return res.status(200).json({
+    success: true,
+    message: "User is authenticated",
+    user: req.user, 
+  });
+}
+
+export {loginUser, checkAuthUser};

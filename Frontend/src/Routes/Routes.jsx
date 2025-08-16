@@ -8,6 +8,8 @@ import { UserContext } from '../context/User.context';
 
 function PageRouters(){
     const {currUser} = useContext(UserContext);
+    console.log(currUser);
+    
     return(
         <BrowserRouter>
         <Routes>

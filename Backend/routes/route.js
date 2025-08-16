@@ -1,7 +1,7 @@
 import { Router } from "express";
 import authRoute from "../utils/authRoute.js";
-import loginUser from "../controllers/loginUser.controller.js";
 import logoutUser from "../controllers/logoutUser.controller.js";
+import {loginUser, checkAuthUser} from "../controllers/loginUser.controller.js";
 import register from "../controllers/register.js";
 import transaction from "../controllers/transaction.controller.js";
 import showIncomeExpense from "../controllers/incomeExpense.controller.js";
@@ -16,5 +16,6 @@ route.post("/transaction", authRoute, transaction);
 route.get("/income-expense", authRoute, showIncomeExpense);
 route.get("/last-transactions", authRoute, lastTransaction);
 route.get("/category-expense", authRoute, categoryExpense);
+route.get("/check-auth", authRoute, checkAuthUser);
 
 export default route;

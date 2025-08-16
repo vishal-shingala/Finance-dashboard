@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "../context/User.context";
+import DateFormatter from "../parts/DateFormatter";
 
 const History = () => {
   const {transactions} = useContext(UserContext)
@@ -25,17 +26,17 @@ const History = () => {
               <div
                 className="text-md font-bold"
                 style={{
-                  color: tx.amount >= 0 ? "#22c55e" : "#ef4444",
+                  color: tx.type === 'income' ? "#22c55e" : "#ef4444",
                 }}
               >
-                {tx.amount >= 0 ? `+₹${tx.amount}` : `-₹${Math.abs(tx.amount)}`}
+                {tx.type === 'income' ? `+₹${tx.amount}` : `-₹${Math.abs(tx.amount)}`}
               </div>
 
               {/* Category and Date */}
               <div className="text-right text-sm">
                 <div className="font-medium">{tx.category}</div>
                 <div className="text-gray-400 text-xs">
-                  {tx.date}, {tx.time}
+                  <DateFormatter isodate={tx.date}/>
                 </div>
               </div>
             </div>

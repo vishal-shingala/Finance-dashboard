@@ -1,9 +1,9 @@
 import React from 'react'
 
-const Card = ({ type, amount }) => {
+const Card = ({ type, amount, className }) => {
   return (
     <div
-      className="
+      className={`
         bg-gray 
         rounded-xl 
         shadow-lg 
@@ -22,12 +22,12 @@ const Card = ({ type, amount }) => {
         group
         animate-fade-in-up
         cursor-pointer
-      "
+      `}
     >
       <span className="text-accent text-sm font-semibold uppercase tracking-wide mb-2 animate-fade-in-up">
         {type}
       </span>
-      <span className="text-white text-3xl font-bold animate-fade-in-up group-hover:text-accent transition-colors duration-300">
+      <span className={`text-3xl font-bold animate-fade-in-up group-hover:text-accent transition-colors duration-300 ${className || ''}`}>
         ₹ {amount?.toLocaleString()}
       </span>
       <div className="w-full h-1 mt-4 bg-accent rounded-full opacity-60 animate-fade-in-up group-hover:opacity-100 transition-opacity duration-300"></div>

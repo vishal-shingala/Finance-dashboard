@@ -5,6 +5,9 @@ import { generateToken } from "../utils/token.js";
 const register = asynchandler(async (req, res) => {
 
   const { username, email, password } = req.body;
+  console.log(username);
+  console.log(email);
+  console.log(password);
 
   if (!username || !email || !password) {
     return res.status(300).json({ message: "All Credentials are required." });

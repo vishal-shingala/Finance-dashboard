@@ -1,26 +1,34 @@
-import React from "react";
-import "../index.css"; // Make sure custom animations like animate-blob and animation-delay exist
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import toast from 'react-hot-toast';
+import { UserContext } from "../context/User.context";
+
 
 
 const Login = () => {
   const navigate = useNavigate();
+  const {setCurrUser} = useContext(UserContext);
 
+  
   const loginMutation = useMutation({
     mutationFn: async (data) => {
-      const res = await axios.post("http://localhost:5000/api/login", data);
+      const res = await axios.post("http://localhost:3000/api/v1/login", data, {
+        withCredentials: true
+      });
       return res.data;
     },
     onSuccess: (data) => {
       console.log("Login successful:", data);
-      
+      setCurrUser(data);
+      toast.success("Login Successfully", { position: "top-center" });
+      navigate("/"); // example navigation
     },
     onError: (error) => {
       console.error("Login failed:", error);
-      alert(error.response?.data?.message || "Login failed");
+      toast.error("Failed to Login", { position: "top-center" });
     },
   });
 
