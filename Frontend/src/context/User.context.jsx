@@ -67,10 +67,16 @@ const UserContextProvider = ({ children }) => {
   useEffect(() => {
     if (totalExpense.data) {
       console.log(totalExpense.data);
-      setIncome(totalExpense.data.data.income || 10);
-      setExpense(totalExpense.data.data.expense || 0);
-      setIncomeDetail(totalExpense.data.data.incomeDetail || []);
-      setExpenseDetail(totalExpense.data.data.expenseDetail || []);      
+      setIncome(totalExpense.data.data.total[0].income || 0);
+      setExpense(totalExpense.data.data.total[0].expense || 0);
+      const tempIncome = new Array(30).fill(0);
+      const tempExpense = new Array(30).fill(0);
+      totalExpense.data.data?.totalDetail.map((obj) => {
+        tempIncome[13]=(obj.incomeDetail);
+        tempExpense[12  ] = (obj.expenseDetail);
+      })
+      setIncomeDetail(tempIncome);
+      setExpenseDetail(tempExpense);
     }
   }, [totalExpense.isLoading, totalExpense.isError, totalExpense.data]);
 

@@ -10,43 +10,56 @@ const showIncomeExpense = asynchandler(async (req, res) => {
   const result = await Transaction.aggregate([
     {
       $match: {
+        userId: userId,
         $expr: {
           $and: [
-            { $eq: ["$userId", userId] },
             { $eq: [{ $month: "$date" }, new Date().getMonth() + 1] },
+            { $eq: [{ $year: "$date" }, new Date().getFullYear()] },
           ],
         },
       },
     },
     {
-      $group: {
-        _id: null,
-        income: {
-          $sum: {
-            $cond: [{ $eq: ["$type", "income"] }, "$amount", 0],
+      $facet: {
+        total: [
+          {
+            $group: {
+              _id: null,
+              income: {
+                $sum: {
+                  $cond: [{ $eq: ["$type", "income"] }, "$amount", 0],
+                },
+              },
+              expense: {
+                $sum: {
+                  $cond: [{ $eq: ["$type", "expense"] }, "$amount", 0],
+                },
+              },
+            },
           },
-        },
-        expense: {
-          $sum: {
-            $cond: [{ $eq: ["$type", "expense"] }, "$amount", 0],
+        ],
+        totalDetail: [
+          {
+            $group: {
+              _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+              incomeDetail: {
+                $sum: {
+                  $cond: [{ $eq: ["$type", "income"] }, "$amount", 0],
+                },
+              },
+              expenseDetail: {
+                $sum: {
+                  $cond: [{ $eq: ["$type", "expense"] }, "$amount", 0],
+                },
+              },
+            },
           },
-        },
-        incomeDetail: {
-          $push: {
-            $cond: [{ $eq: ["$type", "income"] }, "$amount", "$$REMOVE"],
-          },
-        },
-        expenseDetail: {
-          $push: {
-            $cond: [{ $eq: ["$type", "expense"] }, "$amount", "$$REMOVE"],
-          },
-        },
+          { $sort: { _id: 1 } },
+        ],
       },
     },
-    {
-      $project: { _id: 0 },
-    },
   ]);
+
   console.log("Income and Expense Data:", result);
   return res.status(200).json({
     success: true,

@@ -65,7 +65,8 @@
   --primary-white: #f8fafc;
   --primary-silver: #a1a1aa;
   --primary-accent: #6366f1;
-  --primary-bg: linear-gradient(135deg, #0a0a0a 0%, #23272f 50%, #18181b 100%);
+  --primary-bg: radial-gradient(circle, #101010, #151515, #1c1c1c);
+  /* --primary-bg: linear-gradient(135deg, #0a0a0a 0%, #23272f 50%, #18181b 100%); */
 }
 
 /* ---------------------------------------- */
