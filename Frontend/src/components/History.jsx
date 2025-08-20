@@ -19,7 +19,6 @@ const History = () => {
         ) : (
           transactions.map((tx) => (
             <div
-              key={tx.id}
               className="flex justify-between items-start bg-[#111827] rounded-md px-3 py-2"
             >
               {/* Amount */}

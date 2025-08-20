@@ -74,7 +74,7 @@ const BarChartDashboard = () => {
   };
 
   return (
-    <div className="w-full md:w-[50rem] h-[400px] bg-dark p-4 rounded-lg shadow-md">
+    <div className="w-full md:w-[50rem] h-[400px] bg-dark p-4 rounded-lg shadow-md sm:mb-2">
       <h2 className="text-white text-lg font-bold">Category-wise Expenses</h2>
       <Bar data={data} options={options} />
     </div>

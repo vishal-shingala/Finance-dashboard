@@ -1,36 +1,57 @@
-import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function AddTransactionForm({ isOpen, onClose }) {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset
+    reset,
   } = useForm();
 
-  const [message, setMessage] = useState("");  
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (data) => {
+      const res = await axios.post(
+        "http://localhost:3000/api/v1/transaction",
+        data
+      );
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Transaction added successfully ✅", {
+        position: "top-center",
+      });
+      reset(); // clear form
+      onClose(); 
+      queryClient.invalidateQueries(["transactions"]); // refresh list
+    },
+    onError: () => {
+      toast.error("Failed to add Transaction ❌", {
+        position: "top-center",
+      });
+    },
+  });
 
   const onSubmit = (data) => {
-    setMessage(
-      data.type === "income"
-        ? "Income added successfully ✅"
-        : "Expense added successfully ✅"
-    );
-    setTimeout(() => {
-      setMessage("");
-      reset();
-      onClose();
-    }, 1500);
+    mutation.mutate(data);
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-96 relative">
-        
-        {/* Close Button */}
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+      <div
+        className="relative w-96 sm:w-96 p-6 rounded-2xl
+                  bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900
+                  border border-gray-700 shadow-xl shadow-blue-500/10 
+                  animate-slide-up"
+      >
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-400 hover:text-white"
@@ -39,66 +60,76 @@ export default function AddTransactionForm({ isOpen, onClose }) {
         </button>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          
-          {/* Date - Top Right Corner */}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-4 text-white"
+        >
+          {/* Date */}
           <div className="flex justify-end">
             <input
               type="date"
-              {...register("date", { required: "Date is required" })}
-              className="bg-gray-800 border border-gray-700 rounded px-2 py-1 text-sm"
+              {...register("date")}
+              disabled={mutation.isLoading}
+              className="bg-gray-800 border border-gray-700 rounded-lg px-2 py-1 text-sm 
+                     focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
-          {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
 
           {/* Transaction Type */}
-          <div>
-            <select
-              {...register("type", { required: "Select type" })}
-              className="bg-gray-800 border border-gray-700 rounded px-3 py-2 w-full"
-            >
-              <option value="">Select Type</option>
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
-            {errors.type && <p className="text-red-500 text-sm">{errors.type.message}</p>}
-          </div>
+          <select
+            {...register("type", { required: "Select type" })}
+            disabled={mutation.isLoading}
+            className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 w-full 
+                   focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          >
+            <option value="">Select Type</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select>
+          {errors.type && (
+            <p className="text-red-500 text-sm">{errors.type.message}</p>
+          )}
 
           {/* Amount */}
-          <div>
-            <input
-              type="number"
-              placeholder="Amount"
-              {...register("amount", {
-                required: "Amount is required",
-                min: { value: 1, message: "Must be greater than 0" }
-              })}
-              className="bg-gray-800 border border-gray-700 rounded px-3 py-2 w-full"
-            />
-            {errors.amount && <p className="text-red-500 text-sm">{errors.amount.message}</p>}
-          </div>
+          <input
+            type="number"
+            placeholder="Amount"
+            {...register("amount", {
+              required: "Amount is required",
+              min: { value: 1, message: "Must be greater than 0" },
+            })}
+            disabled={mutation.isLoading}
+            className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 w-full 
+                   focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+          {errors.amount && (
+            <p className="text-red-500 text-sm">{errors.amount.message}</p>
+          )}
 
           {/* Category */}
-          <div>
-            <input
-              type="text"
-              placeholder="Category"
-              {...register("category", { required: "Category is required" })}
-              className="bg-gray-800 border border-gray-700 rounded px-3 py-2 w-full"
-            />
-            {errors.category && <p className="text-red-500 text-sm">{errors.category.message}</p>}
-          </div>
+          <input
+            type="text"
+            placeholder="Category"
+            {...register("category", { required: "Category is required" })}
+            disabled={mutation.isLoading}
+            className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 w-full 
+                   focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+          {errors.category && (
+            <p className="text-red-500 text-sm">{errors.category.message}</p>
+          )}
 
-          {/* Submit Button */}
+          {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
+            disabled={mutation.isLoading}
+            className="w-full py-2 rounded-lg text-white font-medium 
+                   bg-gradient-to-r from-blue-500 to-indigo-600 
+                   hover:from-blue-600 hover:to-indigo-700 shadow-md transition
+                   disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Add Transaction
+            {mutation.isLoading ? "Adding..." : "Add Transaction"}
           </button>
-
-          {/* Success Message */}
-          {message && <p className="text-green-400 text-center">{message}</p>}
         </form>
       </div>
     </div>

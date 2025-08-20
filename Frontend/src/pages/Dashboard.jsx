@@ -6,6 +6,7 @@ import CalendarDashboard from "../components/Calendar.Dashboard";
 import PiechartDashboard from "../components/Piechart.Dashboard";
 import BarChartDashboard from "../components/Barchar.Dashboard";
 import History from "../components/History";
+import Chatbot from "../components/Chatbot";
 
 const Dashboard = () => {
   return (
@@ -30,6 +31,10 @@ const Dashboard = () => {
         <BarChartDashboard />
         <History />
       </div>
+      <span className="fixed bottom-5 right-5">
+      <Chatbot/>
+
+      </span>
     </div>
   );
 };

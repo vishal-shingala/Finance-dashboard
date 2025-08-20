@@ -4,6 +4,7 @@ import { UserContext } from "../context/User.context";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const {setLogOut} = useContext(UserContext);
   const {openAddTransactionForm, setOpenAddTransactionForm} = useContext(UserContext);
   return (
     <nav className="w-full bg-dark sticky top-0 shadow-lg py-3 px-6 flex items-center justify-between animate-fade-in border-b border-gray">
@@ -28,8 +29,9 @@ const Navbar = () => {
             <span
               className="inline-block animate-fade-in-up"
               style={{ animationDelay: "0.1s" }}
+              onClick={()=>setLogOut(true)}
             >
-              Login
+              LogOut
             </span>
             <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-white scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full"></span>
           </li>

@@ -46,7 +46,7 @@ const PiechartDashboard = () => {
   };
 
   return (
-    <div className="bg-dark rounded-xl w-[50rem] h-[25rem] shadow-lg p-6 animate-fade-in-up flex flex-col items-center">
+    <div className="bg-dark rounded-xl md:w-[50rem] h-[25rem] shadow-lg p-6 animate-fade-in-up flex flex-col items-center">
       <Pie data={data} options={options} />
     </div>
   );

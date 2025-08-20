@@ -19,6 +19,7 @@ const UserContextProvider = ({ children }) => {
   const [selectMonth, setSelectMonth] = useState(new Date().getMonth());
   const [categoryExpense, setCategoryExpense] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [logOut, setLogOut] = useState(false)
 
   
 
@@ -32,6 +33,13 @@ const UserContextProvider = ({ children }) => {
       toast.error(error.response?.data?.message || error.message);
     }
   };
+
+  const logOutPage = async () => {
+    const res = await axios.post("/api/v1/logout");
+    return res.data;
+  }
+
+
 
   const result = useQueries({
     queries: [
@@ -95,6 +103,12 @@ const UserContextProvider = ({ children }) => {
     checkAuth();
   }, []);
 
+  useEffect(()=>{
+    if(logOut){
+      logOutPage();
+    }
+  },[logOut])
+
   const value = {
     income,
     expense,
@@ -108,6 +122,7 @@ const UserContextProvider = ({ children }) => {
     setSelectMonth,
     categoryExpense,
     transactions,
+    setLogOut
   };
 
   return (
