@@ -80,8 +80,8 @@ const UserContextProvider = ({ children }) => {
       console.log(totalExpense.data);
       setIncome(totalExpense.data.data.total[0]?.income || 0);
       setExpense(totalExpense.data.data.total[0]?.expense || 0);
-      const tempIncome = new Array(30).fill(0);
-      const tempExpense = new Array(30).fill(0);
+      const tempIncome = new Array(31).fill(0);
+      const tempExpense = new Array(31).fill(0);
       totalExpense.data.data?.totalDetail.map((obj) => {
         const date = new Date(obj._id).getDate() - 1;
         tempExpense[date] = obj?.expenseDetail || 0;
