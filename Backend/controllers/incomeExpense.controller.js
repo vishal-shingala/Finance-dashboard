@@ -4,8 +4,11 @@ import asynchandler from "../utils/asynchandler.js";
 
 const showIncomeExpense = asynchandler(async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.user);
-  const user = await Transaction.find({ userId });
-  console.log("User Data:", user);
+  console.log(req.body);
+  
+  const month = Number(req.body.month);
+  console.log(month);
+  
 
   const result = await Transaction.aggregate([
     {
@@ -13,7 +16,7 @@ const showIncomeExpense = asynchandler(async (req, res) => {
         userId: userId,
         $expr: {
           $and: [
-            { $eq: [{ $month: "$date" }, new Date().getMonth() + 1] },
+            { $eq: [{ $month: "$date" }, month] },
             { $eq: [{ $year: "$date" }, new Date().getFullYear()] },
           ],
         },

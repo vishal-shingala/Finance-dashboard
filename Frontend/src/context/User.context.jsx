@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import AddTransactionForm from "../components/AddTransactionForm";
-import { useQueries } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useMutations } from "../hooks/Mutations";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -16,12 +17,10 @@ const UserContextProvider = ({ children }) => {
   const [expenseDetail, setExpenseDetail] = useState([]);
   const [currUser, setCurrUser] = useState(null);
   const [openAddTransactionForm, setOpenAddTransactionForm] = useState(false);
-  const [selectMonth, setSelectMonth] = useState(new Date().getMonth());
+  const [selectMonth, setSelectMonth] = useState(new Date().getMonth() + 1);
   const [categoryExpense, setCategoryExpense] = useState([]);
   const [transactions, setTransactions] = useState([]);
-  const [logOut, setLogOut] = useState(false)
-
-  
+  const [logOut, setLogOut] = useState(false);
 
   const checkAuth = async () => {
     try {
@@ -34,80 +33,95 @@ const UserContextProvider = ({ children }) => {
     }
   };
 
-  const logOutPage = async () => {
-    const res = await axios.post("/api/v1/logout");
-    return res.data;
-  }
-
-
-
-  const result = useQueries({
-    queries: [
-      {
-        queryKey: ["total"],
-        queryFn: async () => {
-          const res = await axios.get("/api/v1/income-expense");
-          return res.data;
-        },
-        enabled: !!currUser,
+  const [totalExpense, lastTransactions, categoryTotalExpense] = useMutations([
+    {
+      mutationFn: async () => {
+        const res = await axios.post("/api/v1/income-expense", {
+          month: selectMonth,
+        });
+        return res.data;
       },
-      {
-        queryKey: ["transactions"],
-        queryFn: async () => {
-          const res = await axios.get("/api/v1/last-transactions");
-          return res.data;
-        },
-        enabled: !!currUser,
+    },
+    {
+      mutationFn: async () => {
+        const res = await axios.post("/api/v1/last-transactions", {
+          month: selectMonth,
+        });
+        return res.data;
       },
-      {
-        queryKey: ["category"],
-        queryFn: async () => {
-          const res = await axios.get("/api/v1/category-expense");
-          return res.data;
-        },
-        enabled: !!currUser,
+    },
+    {
+      mutationFn: async () => {
+        const res = await axios.post("/api/v1/category-expense", {
+          month: selectMonth,
+        });
+        return res.data;
       },
-    ],
-  });
+    },
+  ]);
 
-  const [totalExpense, lastTransactions, categoryTotalExpense] = result;
+  const runMutation = async () => {
+    await Promise.all([
+      totalExpense.mutateAsync(),
+      lastTransactions.mutateAsync(),
+      categoryTotalExpense.mutateAsync(),
+    ]);
+  };
+
+  useEffect(() => {
+    if (!currUser) return;
+
+    runMutation();
+    console.log("Mutation run");
+  }, [currUser, selectMonth]);
 
   useEffect(() => {
     if (totalExpense.data) {
       console.log(totalExpense.data);
-      setIncome(totalExpense.data.data.total[0].income || 0);
-      setExpense(totalExpense.data.data.total[0].expense || 0);
+      setIncome(totalExpense.data.data.total[0]?.income || 0);
+      setExpense(totalExpense.data.data.total[0]?.expense || 0);
       const tempIncome = new Array(30).fill(0);
       const tempExpense = new Array(30).fill(0);
       totalExpense.data.data?.totalDetail.map((obj) => {
-        tempIncome[13]=(obj.incomeDetail);
-        tempExpense[12  ] = (obj.expenseDetail);
-      })
-      setIncomeDetail(tempIncome);
-      setExpenseDetail(tempExpense);
+        const date = new Date(obj._id).getDate() - 1;
+        tempExpense[date] = obj?.expenseDetail || 0;
+        tempIncome[date] = obj?.incomeDetail || 0;
+      });
+      setIncomeDetail(tempIncome.slice(0, new Date().getDate()));
+      setExpenseDetail(tempExpense.slice(0, new Date().getDate()));
     }
-  }, [totalExpense.isLoading, totalExpense.isError, totalExpense.data]);
+  }, [totalExpense.data]);
 
-  useEffect(()=>{
-    if(lastTransactions.data){
+  useEffect(() => {
+    if (lastTransactions.data) {
       setTransactions(lastTransactions.data.data);
     }
-  },[lastTransactions.isLoading, lastTransactions.isError, lastTransactions.data])
+  }, [lastTransactions.data]);
 
-  useEffect(()=>{
-    if(categoryTotalExpense.data){
-      setCategoryExpense(categoryTotalExpense.data.data)
+  useEffect(() => {
+    if (categoryTotalExpense.data) {
+      setCategoryExpense(categoryTotalExpense.data.data);
     }
-  },[categoryTotalExpense.isLoading, categoryTotalExpense.isError, categoryTotalExpense.data])
+  }, [categoryTotalExpense.data]);
+
   useEffect(() => {
     checkAuth();
   }, []);
 
-  useEffect(()=>{
-    if(logOut){
+  useEffect(() => {
+    if (logOut) {
+      const logOutPage = async () => {
+        try {
+          await logOut();
+          setCurrUser(null);
+          toast.success("Logged out successfully");
+        } catch (err) {
+          toast.error(err.response?.data?.message || err.message);
+        }
+      };
       logOutPage();
     }
-  },[logOut])
+  }, [logOut]);
 
   const value = {
     income,
@@ -122,7 +136,7 @@ const UserContextProvider = ({ children }) => {
     setSelectMonth,
     categoryExpense,
     transactions,
-    setLogOut
+    setLogOut,
   };
 
   return (

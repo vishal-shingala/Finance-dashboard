@@ -7,12 +7,7 @@ const lastTransaction = asynchandler(async (req, res) => {
   const transactions = await Transaction.aggregate([
     {
       $match: {
-        $expr: {
-          $and: [
-            { $eq: ["$userId", userId] },
-            { $eq: [{ $month: "$date" }, new Date().getMonth() + 1] },
-          ],
-        },
+        userId: userId,
       },
     },
     {
