@@ -7,6 +7,8 @@ import transaction from "../controllers/transaction.controller.js";
 import showIncomeExpense from "../controllers/incomeExpense.controller.js";
 import lastTransaction from "../controllers/lastTransaction.controller.js";
 import categoryExpense from "../controllers/categoryExpense.controller.js";
+// import chatBot from "../controllers/chatbot.controller.js";
+import Agent from "../controllers/agent.controller.js";      
 const route = Router();
 
 route.post("/register", register);
@@ -17,6 +19,7 @@ route.post("/income-expense", authRoute, showIncomeExpense);
 route.post("/last-transactions", authRoute, lastTransaction);
 route.post("/category-expense", authRoute, categoryExpense);
 route.get("/check-auth", authRoute, checkAuthUser);
+route.get("/chatbot", authRoute, Agent);
 
 
 export default route;

@@ -87,8 +87,8 @@ const UserContextProvider = ({ children }) => {
         tempExpense[date] = obj?.expenseDetail || 0;
         tempIncome[date] = obj?.incomeDetail || 0;
       });
-      setIncomeDetail(tempIncome.slice(0, new Date().getDate()));
-      setExpenseDetail(tempExpense.slice(0, new Date().getDate()));
+      setIncomeDetail(tempIncome.slice(0, 31));
+      setExpenseDetail(tempExpense.slice(0, 31));
     }
   }, [totalExpense.data]);
 
