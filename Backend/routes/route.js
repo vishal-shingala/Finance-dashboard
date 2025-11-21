@@ -19,7 +19,7 @@ route.post("/income-expense", authRoute, showIncomeExpense);
 route.post("/last-transactions", authRoute, lastTransaction);
 route.post("/category-expense", authRoute, categoryExpense);
 route.get("/check-auth", authRoute, checkAuthUser);
-route.get("/chatbot", authRoute, Agent);
+route.post("/chatbot", authRoute, Agent);
 
 
 export default route;

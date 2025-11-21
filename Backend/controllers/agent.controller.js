@@ -31,6 +31,7 @@ const Agent = asynchandler(async (req, res) => {
     description: `
     Use this tool to query the user's financial transactions from a MongoDB database.
     The input MUST be a valid MongoDB aggregate pipeline passed as a single JSON string.
+    use only ruppe sybmol to display amount and unneccsary symbols.
     Available fields are: 'amount' (number), 'category' (string), 'type' (string), and 'date' (a BSON Date object).
 
     **CRITICAL**: For queries about a specific month, you MUST use the '$expr' operator with '$month' and '$year'. The current year is 2025.

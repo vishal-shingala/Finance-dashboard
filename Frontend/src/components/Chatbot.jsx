@@ -2,6 +2,9 @@ import { useState } from "react";
 import { MessageCircle, X } from "lucide-react"; // nice icons
 import axios from "axios";
 
+axios.defaults.baseURL = "http://localhost:3000";
+axios.defaults.withCredentials = true;
+
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -18,8 +21,8 @@ export default function Chatbot() {
 
     try {
       // Call backend API
-      const res = await axios.post("/chat", { message: input });
-      const botMsg = { from: "bot", text: res.data.reply };
+      const res = await axios.post("/api/v1/chatbot", { question: input });
+      const botMsg = { from: "bot", text: res.data.answer };
 
       setMessages((prev) => [...prev, userMsg, botMsg]);
     } catch (err) {
