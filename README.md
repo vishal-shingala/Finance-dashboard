@@ -1,79 +1,75 @@
-# Finance Dashboard
+# 💰 Finance Dashboard – AI-Enhanced Personal Finance Manager
 
-A full-stack finance dashboard application for tracking income, expenses, and visualizing financial data. Built with **React** (frontend) and **Node.js/Express/MongoDB** (backend), featuring authentication, transaction management, and AI-powered chatbot analytics.
+A **full-stack personal finance dashboard** that helps users track income and expenses, visualize spending patterns, and gain **AI-powered insights** through natural language queries.
 
----
-
-## 📚 Table of Contents
-
-- [🔄 Application Flow](#application-flow)
-- [🚀 Getting Started](#getting-started)
-- [🗂️ Project Structure](#project-structure)
-- [🔐 Authentication Flow](#authentication-flow)
-- [💸 Transaction Flow](#transaction-flow)
-- [📊 Dashboard & Data Visualization](#dashboard--data-visualization)
-- [🤖 AI Chatbot Integration](#ai-chatbot-integration)
-- [🛠️ Tech Stack](#tech-stack)
-- [📦 API Endpoints](#api-endpoints)
-- [👨‍💻 Development Scripts](#development-scripts)
-- [📄 License](#license)
+This project demonstrates **production-style full-stack development**, secure authentication, real database usage, and **LLM-powered financial analytics**.
 
 ---
 
-## 🔄 [Application Flow](#application-flow)
+## 🚀 Features
 
-1. **User Registration/Login**  
-   ⬇️  
-2. **JWT Authentication & Session**  
-   ⬇️  
-3. **Dashboard Display**  
-   ⬇️  
-4. **Add/View Transactions**  
-   ⬇️  
-5. **Data Visualization (Charts, History, Calendar)**  
-   ⬇️  
-6. **AI Chatbot for Analytics**  
+### 🔐 Authentication
+- User registration, login, and logout
+- Secure JWT-based authentication using HTTP-only cookies
+- Middleware-protected routes for user-specific data
 
----
+### 💸 Expense & Income Management
+- Add, edit, and delete financial transactions
+- Categorize income and expenses
+- Persistent data storage with MongoDB
 
-## 🚀 [Getting Started](#getting-started)
+### 📊 Financial Dashboard
+- Interactive charts and summaries
+- Monthly income vs expense overview
+- Category-wise expense analysis
+- Recent transaction history
 
-### Prerequisites
-
-- Node.js (v18+ recommended)
-- MongoDB instance (local or Atlas)
-
-### 1. Clone the Repository
-
-```sh
-git clone <your-repo-url>
-cd Finance-dashboard
-```
-
-### 2. Setup Backend
-
-```sh
-cd Backend
-npm install
-# Create a .env file with MONGODB_URI, JWTSECRET, PORT, etc.
-npm run dev
-```
-
-### 3. Setup Frontend
-
-```sh
-cd ../Frontend
-npm install
-npm run dev
-```
-
-- Frontend: http://localhost:5173  
-- Backend: http://localhost:3000
+### 🤖 AI-Powered Chatbot
+- Ask natural language questions about your finances
+- AI interprets queries and analyzes transaction data
+- Returns summarized insights instead of raw data
+- Built as a foundation for advanced AI analytics
 
 ---
 
-## 🗂️ [Project Structure](#project-structure)
+## 🧠 Why This Project (AI Era)
 
+Most finance dashboards stop at **charts and numbers**.  
+This project introduces **AI-driven interaction**, allowing users to *ask questions* like:
+
+- “Where did I spend the most this month?”
+- “Show my food expenses in the last 30 days”
+
+The system translates these questions into **database-level analytics**, making financial data more accessible and intelligent.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- React
+- Vite
+- Tailwind CSS
+- Chart.js
+- React Query
+- React Router
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT Authentication
+- bcrypt
+
+### AI / Analytics
+- LangChain
+- Groq / OpenAI-compatible LLM
+- AI agent for query interpretation
+
+---
+
+## 🏗️ Project Structure
 ```
 Finance-dashboard/
 │
@@ -96,106 +92,111 @@ Finance-dashboard/
 │   └── index.html        # App root
 │
 └── README.md             # This file
+
 ```
+---
+
+## 🔐 Authentication Flow
+
+- **Register**
+  - Endpoint: `/api/v1/register`
+  - Password is hashed before storing
+  - JWT issued and stored as HTTP-only cookie
+
+- **Login**
+  - Endpoint: `/api/v1/login`
+  - Credentials validated and JWT reissued
+
+- **Session Validation**
+  - JWT verified via middleware (`authRoute`)
+  - Protected APIs require valid session
 
 ---
 
-## 🔐 [Authentication Flow](#authentication-flow)
+## 💸 Transaction Flow
 
-- **Register:**  
-  - User submits name, email, password via `/api/v1/register`.
-  - Backend creates user, hashes password, issues JWT (cookie).
-- **Login:**  
-  - User submits email, password via `/api/v1/login`.
-  - Backend verifies credentials, issues JWT (cookie).
-- **Session:**  
-  - JWT stored as HTTP-only cookie.
-  - Protected routes use middleware ([`authRoute`](Backend/utils/authRoute.js)) to verify JWT.
+- **Add Transaction**
+  - Endpoint: `/api/v1/transaction` (protected)
+  - Stores amount, type, category, date, and userId
 
----
-
-## 💸 [Transaction Flow](#transaction-flow)
-
-- **Add Transaction:**  
-  - User opens modal, submits amount, type, category, date.
-  - POST `/api/v1/transaction` (protected).
-  - Transaction saved to MongoDB with userId.
-- **Fetch Transactions:**  
-  - Dashboard fetches income/expense summary, last transactions, and category-wise data via:
-    - `/api/v1/income-expense`
-    - `/api/v1/last-transactions`
-    - `/api/v1/category-expense`
+- **Fetch Analytics**
+  - `/api/v1/income-expense` – summary totals
+  - `/api/v1/last-transactions` – recent activity
+  - `/api/v1/category-expense` – category breakdown
 
 ---
 
-## 📊 [Dashboard & Data Visualization](#dashboard--data-visualization)
+## 📊 Dashboard & Data Visualization
 
-- **Charts:**  
-  - Line chart: Income/Expense over days ([`ChartDashboard`](Frontend/src/components/Chart.Dashboard.jsx))
-  - Pie chart: Income vs Expense ([`PiechartDashboard`](Frontend/src/components/Piechart.Dashboard.jsx))
-  - Bar chart: Category-wise expenses ([`BarChartDashboard`](Frontend/src/components/Barchar.Dashboard.jsx))
-- **Calendar:**  
-  - Month selector to filter data ([`CalendarDashboard`](Frontend/src/components/Calendar.Dashboard.jsx))
-- **History:**  
-  - Recent transactions ([`History`](Frontend/src/components/History.jsx))
+- **Line Chart**
+  - Daily income vs expense trends  
+  - Component: `Chart.Dashboard.jsx`
 
----
+- **Pie Chart**
+  - Income vs expense ratio  
+  - Component: `Piechart.Dashboard.jsx`
 
-## 🤖 [AI Chatbot Integration](#ai-chatbot-integration)
+- **Bar Chart**
+  - Category-wise expenses  
+  - Component: `Barchar.Dashboard.jsx`
 
-- **Chatbot UI:**  
-  - Floating chat window ([`Chatbot`](Frontend/src/components/Chatbot.jsx))
-- **Backend Agent:**  
-  - POST `/api/v1/chatbot` (protected)
-  - Uses LLM (Groq/OpenAI) to interpret user questions, generate MongoDB aggregation pipelines, and return results.
-  - See [`Agent`](Backend/controllers/agent.controller.js)
+- **Calendar Filter**
+  - Month-based filtering  
+  - Component: `Calendar.Dashboard.jsx`
 
 ---
 
-## 🛠️ [Tech Stack](#tech-stack)
+## 🤖 AI Chatbot Integration
 
-- **Frontend:** React, Vite, TailwindCSS, Chart.js, React Query, React Router
-- **Backend:** Node.js, Express, MongoDB, Mongoose, JWT, LangChain, Groq LLM
-- **Other:** ESLint, PostCSS, dotenv, bcrypt
+- **Frontend**
+  - Floating chatbot UI  
+  - Component: `Chatbot.jsx`
 
----
+- **Backend**
+  - Endpoint: `/api/v1/chatbot` (protected)
+  - Uses LLM to:
+    - Understand user intent
+    - Generate MongoDB aggregation pipelines
+    - Execute queries securely
+    - Return human-readable insights
 
-## 📦 [API Endpoints](#api-endpoints)
-
-| Method | Endpoint                | Description                       |
-|--------|-------------------------|-----------------------------------|
-| POST   | `/api/v1/register`      | Register new user                 |
-| POST   | `/api/v1/login`         | Login user                        |
-| POST   | `/api/v1/logout`        | Logout user                       |
-| POST   | `/api/v1/transaction`   | Add a transaction                 |
-| POST   | `/api/v1/income-expense`| Get income/expense summary        |
-| POST   | `/api/v1/last-transactions` | Get last 5 transactions      |
-| POST   | `/api/v1/category-expense`  | Get category-wise expenses   |
-| GET    | `/api/v1/check-auth`    | Check user authentication         |
-| POST   | `/api/v1/chatbot`       | AI chatbot analytics              |
+- **Core Logic**
+  - Controller: `agent.controller.js`
 
 ---
 
-## 👨‍💻 [Development Scripts](#development-scripts)
+## 📦 API Endpoints
 
-**Backend:**
-```sh
+| Method | Endpoint                     | Description                    |
+|------|------------------------------|--------------------------------|
+| POST | `/api/v1/register`           | Register new user              |
+| POST | `/api/v1/login`              | Login user                     |
+| POST | `/api/v1/logout`             | Logout user                    |
+| POST | `/api/v1/transaction`        | Add transaction                |
+| POST | `/api/v1/income-expense`     | Income vs expense summary      |
+| POST | `/api/v1/last-transactions`  | Fetch recent transactions      |
+| POST | `/api/v1/category-expense`   | Category-wise expense data     |
+| GET  | `/api/v1/check-auth`         | Auth status check              |
+| POST | `/api/v1/chatbot`            | AI-powered financial analytics |
+
+---
+
+## 👨‍💻 Development Scripts
+
+### Backend
+```
 cd Backend
+npm install
 npm run dev
 ```
 
-**Frontend:**
-```sh
+### Frontend
+```
 cd Frontend
+npm install
 npm run dev
 ```
 
----
+⭐ If you find this project useful, consider starring the repository!
 
-## 📄 [License](#license)
-
-MIT License. See [LICENSE](LICENSE) for details.
-
----
-
-**Happy Coding! 🚀**
+Happy Coding! 🚀
