@@ -6,10 +6,7 @@ import asynchandler from "../utils/asynchandler.js";
 import { MongoClient, ObjectId } from "mongodb";
 import z from "zod";
 
-const client = new MongoClient(
-  "mongodb+srv://Vishal:vishal123@cluster0.mvrvfbn.mongodb.net/"
-);
-const db = client.db("test");
+
 
 const prompt = ChatPromptTemplate.fromMessages([
   [
