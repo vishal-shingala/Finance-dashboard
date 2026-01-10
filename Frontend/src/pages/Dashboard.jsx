@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Navbar from "../components/Navbar";
 import TransactionCard from "../components/TransactionCard";
 import ChartDashboard from "../components/Chart.Dashboard";
@@ -7,8 +7,11 @@ import PiechartDashboard from "../components/Piechart.Dashboard";
 import BarChartDashboard from "../components/Barchar.Dashboard";
 import History from "../components/History";
 import Chatbot from "../components/Chatbot";
+import { UserContext } from "../context/User.context";
 
 const Dashboard = () => {
+  const { incomeDetail, expenseDetail } = useContext(UserContext);
+
   return (
     <div className="bg-dashboard min-h-screen">
       <div>
@@ -16,11 +19,14 @@ const Dashboard = () => {
       </div>
       <div>
         <TransactionCard />
-        
       </div>
       <div className="flex flex-col justify-around mb-4 w-full md:flex-row">
         <div className="flex-[0.6]">
-          <ChartDashboard />
+          <div className="w-full max-w-4xl mx-auto bg-dark">
+            <div className="relative w-full h-[300px] md:h-[400px]">
+              <ChartDashboard income={incomeDetail} expense={expenseDetail} />
+            </div>
+          </div>
         </div>
         <div className="flex-[0.3]">
           <CalendarDashboard />
@@ -32,8 +38,7 @@ const Dashboard = () => {
         <History />
       </div>
       <span className="fixed bottom-5 right-5">
-      <Chatbot/>
-
+        <Chatbot />
       </span>
     </div>
   );

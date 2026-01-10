@@ -7,6 +7,7 @@ const showIncomeExpense = asynchandler(async (req, res) => {
   console.log(req.body);
   
   const month = Number(req.body.month);
+  const year = req.body.year || new Date().getFullYear();
   console.log(month);
   
 
@@ -17,7 +18,7 @@ const showIncomeExpense = asynchandler(async (req, res) => {
         $expr: {
           $and: [
             { $eq: [{ $month: "$date" }, month] },
-            { $eq: [{ $year: "$date" }, new Date().getFullYear()] },
+            { $eq: [{ $year: "$date" }, year] },
           ],
         },
       },

@@ -5,6 +5,7 @@ import Transaction from "../model/transaction.model.js";
 const categoryExpense = asynchandler(async (req, res) => {
   const user = new mongoose.Types.ObjectId(req.user);
   const month = req.body.month;
+  const year = req.body.year || new Date().getFullYear();
   const expense = await Transaction.aggregate([
     {
       $match: {
@@ -13,7 +14,7 @@ const categoryExpense = asynchandler(async (req, res) => {
         $expr: {
           $and: [
             { $eq: [{ $month: "$date" }, month] },
-            { $eq: [{ $year: "$date" }, new Date().getFullYear()] },
+            { $eq: [{ $year: "$date" }, year] },
           ],
         },
       },

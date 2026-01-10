@@ -11,11 +11,17 @@ import {
 } from "chart.js";
 import { UserContext } from "../context/User.context";
 
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
+ChartJS.register(
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Tooltip,
+  Legend
+);
 
-const ChartDashboard = () => {
+const ChartDashboard = ({ income, expense }) => {
   const chartRef = useRef(null);
-  const {incomeDetail, expenseDetail}  = useContext(UserContext)
 
   useEffect(() => {
     const chart = chartRef.current;
@@ -24,14 +30,14 @@ const ChartDashboard = () => {
     }
   }, []);
 
-  const labels = incomeDetail.map((_, i) => `Day ${i + 1}`);
+  const labels = income.map((_, i) => `Day ${i + 1}`);
 
   const data = {
     labels,
     datasets: [
       {
         label: "Expenses",
-        data: expenseDetail,
+        data: expense,
         borderColor: "#ef4444",
         backgroundColor: "#ef4444",
         tension: 0.4,
@@ -41,7 +47,7 @@ const ChartDashboard = () => {
       },
       {
         label: "Income",
-        data: incomeDetail,
+        data: income,
         borderColor: "#22c55e",
         backgroundColor: "#22c55e",
         tension: 0.4,
@@ -68,8 +74,8 @@ const ChartDashboard = () => {
         bodyColor: "#fff",
         callbacks: {
           label: function (context) {
-            let label = context.dataset.label || '';
-            if (label) label += ': ';
+            let label = context.dataset.label || "";
+            if (label) label += ": ";
             if (context.parsed.y !== null) {
               label += `₹${context.parsed.y}`;
             }
@@ -95,13 +101,7 @@ const ChartDashboard = () => {
     },
   };
 
-  return (
-    <div className="w-full max-w-4xl mx-auto bg-dark">
-      <div className="relative w-full h-[300px] md:h-[400px]">
-        <Line ref={chartRef} data={data} options={options} />
-      </div>
-    </div>
-  );
+  return <Line ref={chartRef} data={data} options={options} />;
 };
 
 export default ChartDashboard;

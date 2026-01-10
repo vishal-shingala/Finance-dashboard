@@ -18,10 +18,13 @@ const UserContextProvider = ({ children }) => {
   const [currUser, setCurrUser] = useState(null);
   const [openAddTransactionForm, setOpenAddTransactionForm] = useState(false);
   const [selectMonth, setSelectMonth] = useState(new Date().getMonth() + 1);
+  const [selectYear, setSelectYear] = useState(new Date().getFullYear());
   const [categoryExpense, setCategoryExpense] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [logOut, setLogOut] = useState(false);
+  const [registerYear, setRegisterYear] = useState(0);
 
+  // Chek user is logged in or not
   const checkAuth = async () => {
     try {
       const { data } = await axios.get("/api/v1/check-auth");
@@ -33,11 +36,14 @@ const UserContextProvider = ({ children }) => {
     }
   };
 
+  // Collecting Data of Uesr
+
   const [totalExpense, lastTransactions, categoryTotalExpense] = useMutations([
     {
       mutationFn: async () => {
         const res = await axios.post("/api/v1/income-expense", {
           month: selectMonth,
+          year: selectYear,
         });
         return res.data;
       },
@@ -46,6 +52,7 @@ const UserContextProvider = ({ children }) => {
       mutationFn: async () => {
         const res = await axios.post("/api/v1/last-transactions", {
           month: selectMonth,
+          year: selectYear,
         });
         return res.data;
       },
@@ -54,6 +61,7 @@ const UserContextProvider = ({ children }) => {
       mutationFn: async () => {
         const res = await axios.post("/api/v1/category-expense", {
           month: selectMonth,
+          year: selectYear,
         });
         return res.data;
       },
@@ -68,13 +76,16 @@ const UserContextProvider = ({ children }) => {
     ]);
   };
 
+  // If User is Logged in, Run mutation
+
   useEffect(() => {
     if (!currUser) return;
 
     runMutation();
     console.log("Mutation run");
-  }, [currUser, selectMonth]);
+  }, [currUser, selectMonth, selectYear]);
 
+  // Total Expense
   useEffect(() => {
     if (totalExpense.data) {
       console.log(totalExpense.data);
@@ -92,22 +103,26 @@ const UserContextProvider = ({ children }) => {
     }
   }, [totalExpense.data]);
 
+  // Transaction History
   useEffect(() => {
     if (lastTransactions.data) {
       setTransactions(lastTransactions.data.data);
     }
   }, [lastTransactions.data]);
 
+  // Category-wise Expense
   useEffect(() => {
     if (categoryTotalExpense.data) {
       setCategoryExpense(categoryTotalExpense.data.data);
     }
   }, [categoryTotalExpense.data]);
 
+  // Run checkAuth Funtion
   useEffect(() => {
     checkAuth();
   }, []);
 
+  // Logout Function
   useEffect(() => {
     if (logOut) {
       const logOutPage = async () => {
@@ -123,6 +138,18 @@ const UserContextProvider = ({ children }) => {
     }
   }, [logOut]);
 
+  const funRegisterYear = async () => {
+    const res = await axios.get("/api/v1/register-year");
+    if (res.data) {
+      setRegisterYear(res.data.year);
+    }
+  };
+  // User Register Year
+  useEffect(() => {
+    if (!currUser) return;
+    funRegisterYear();    
+  }, [currUser]);
+
   const value = {
     income,
     expense,
@@ -134,9 +161,12 @@ const UserContextProvider = ({ children }) => {
     setOpenAddTransactionForm,
     selectMonth,
     setSelectMonth,
+    selectYear,
+    setSelectYear,
     categoryExpense,
     transactions,
     setLogOut,
+    registerYear
   };
 
   return (

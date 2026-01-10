@@ -25,6 +25,7 @@ const register = asynchandler(async (req, res) => {
   }
 
   const userDetail = await User.findOne({ email }).select("-password");
+  
 
   res.status(201).json({ message: "User registered successfully.", userDetail });
 });

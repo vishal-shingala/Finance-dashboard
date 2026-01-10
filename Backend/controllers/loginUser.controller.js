@@ -37,12 +37,18 @@ const loginUser = async (req, res) => {
   }
 };
 
-const checkAuthUser = (req, res) =>{
+const checkAuthUser = (req, res) => {
   return res.status(200).json({
     success: true,
     message: "User is authenticated",
-    user: req.user, 
+    user: req.user,
   });
-}
+};
 
-export {loginUser, checkAuthUser};
+const registerYear = asynchandler(async (req, res) => {
+  const userId = req.user;
+  const year = await User.findById(userId).select("createdAt");
+  res.status(200).json({ year: year.createdAt.getFullYear()-1 });
+});
+
+export { loginUser, checkAuthUser, registerYear };
