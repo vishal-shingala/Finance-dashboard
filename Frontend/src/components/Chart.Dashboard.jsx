@@ -9,7 +9,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { UserContext } from "../context/User.context";
 
 ChartJS.register(
   LineElement,
