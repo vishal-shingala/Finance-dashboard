@@ -5,18 +5,21 @@ import llm from "../config/groq.config.js";
 import asynchandler from "../utils/asynchandler.js";
 import { MongoClient, ObjectId } from "mongodb";
 import z from "zod";
+import mongoose from "mongoose";
 
-
-
-const prompt = ChatPromptTemplate.fromMessages([
-  [
-    "system",
-    "You are a helpful AI assistant that answers questions about a user's financial transactions. You must use the provided tool to query the database. only give me answer without any explanation.",
-  ],
-  ["human", "{input}"],
-  ["placeholder", "{agent_scratchpad}"],
-]);
-
+const dbPromise = (async () => {
+  try {
+    if (mongoose.connection && mongoose.connection.db) return mongoose.connection.db;
+    await new Promise((resolve, reject) => {
+      mongoose.connection.once('connected', resolve);
+      mongoose.connection.once('error', reject);
+    });
+    return mongoose.connection.db;
+  } catch (error) {
+    console.error("Failed to get MongoDB client:", error);
+    throw error;
+  }
+})();
 const Agent = asynchandler(async (req, res) => {
   const userId = req.user;
   if (!userId) {
@@ -79,6 +82,7 @@ const Agent = asynchandler(async (req, res) => {
           JSON.stringify(securePipeline, null, 2)
         );
 
+        const db = await dbPromise;
         const results = await db
           .collection("transactions")
           .aggregate(securePipeline)
@@ -106,7 +110,7 @@ const Agent = asynchandler(async (req, res) => {
 
   const executor = new AgentExecutor({ agent, tools });
 
-  const userInput = req.body.question || "give me the income of 31 august 2025";
+  const userInput = req.body.question;
 
   const result = await executor.invoke({ input: userInput });
 

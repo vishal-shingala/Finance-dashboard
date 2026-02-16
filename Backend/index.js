@@ -1,12 +1,11 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import connectDB from './config/database.js';
 import route from './routes/route.js';
 import cookieParser from 'cookie-parser';
 
 const app = express();
-dotenv.config();
 
 app.use(cors({
   origin: "http://localhost:5173", 

@@ -21,6 +21,7 @@ route.post("/last-transactions", authRoute, lastTransaction);
 route.post("/category-expense", authRoute, categoryExpense);
 route.get("/check-auth", authRoute, checkAuthUser);
 route.get("/register-year", authRoute, registerYear);
+route.post("/chatbot", authRoute, Agent);
 route.post("/filtered-transactions", authRoute, getFilteredTransactions);
 
 export default route;
