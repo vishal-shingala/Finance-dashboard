@@ -15,11 +15,8 @@ const getFilteredTransactions = asynchandler(async (req, res) => {
     matchConditions.date = { $gte: start, $lt: end };
   } else if (startDate) {
     const start = new Date(startDate);
-    matchConditions.date = { $gte: start };
-  } else if (endDate) {
-    const end = new Date(endDate);
-    end.setDate(end.getDate() + 1);
-    matchConditions.date = { $lt: end };
+    const end = new Date().getDate() + 1;
+    matchConditions.date = { $gte: start, $lt: end };
   }
 
   if (month && year) {
@@ -31,7 +28,6 @@ const getFilteredTransactions = asynchandler(async (req, res) => {
     const endYear = new Date(year + 1, 0, 1);
     matchConditions.date = { $gte: startYear, $lt: endYear };
   }
-
   if (category) {
     matchConditions.category = category;
   }
@@ -49,14 +45,14 @@ const getFilteredTransactions = asynchandler(async (req, res) => {
         userId: 0,
         createdAt: 0,
         updatedAt: 0,
-        __v: 0
-      }
-    }
+        __v: 0,
+      },
+    },
   ]);
 
   return res.status(200).json({
     message: "Transactions fetched successfully",
-    data: transactions
+    data: transactions,
   });
 });
 

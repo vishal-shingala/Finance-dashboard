@@ -2,7 +2,7 @@ import React from 'react';
 
 const FilterBox = ({ filters, categories, onReset, onChange }) => {
   return (
-    <div className="rounded-lg p-4 border-2 border-white" style={{backgroundColor: 'var(--theme-secondary)'}}>
+    <div className="rounded-xl p-4 bg-dark">
       <h2 className="text-white text-lg font-semibold mb-4">filter box</h2>
       <div className="flex flex-wrap gap-4">
         <div className="flex-1 min-w-0">
