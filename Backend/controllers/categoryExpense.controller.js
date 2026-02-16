@@ -45,4 +45,40 @@ const categoryExpense = asynchandler(async (req, res) => {
     data: expense,
   });
 });
-export default categoryExpense;
+
+const getAllCategories = asynchandler(async (req, res) => {
+  const user = new mongoose.Types.ObjectId(req.user);
+  
+  const categories = await Transaction.aggregate([
+    {
+      $match: {
+        userId: user,
+      },
+    },
+    {
+      $group: {
+        _id: "$category",
+      },
+    },
+    {
+      $sort: {
+        _id: 1,
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        category: "$_id",
+      },
+    },
+  ]);
+
+  const categoryNames = categories.map((item) => item.category);
+
+  return res.status(200).json({
+    message: "All categories fetched successfully",
+    data: categoryNames,
+  });
+});
+
+export { categoryExpense, getAllCategories };

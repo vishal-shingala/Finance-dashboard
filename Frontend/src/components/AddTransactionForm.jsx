@@ -37,6 +37,7 @@ export default function AddTransactionForm({ isOpen, onClose }) {
   });
 
   const onSubmit = (data) => {
+    data = { ...data, category: data.category.toLowerCase() };
     mutation.mutate(data);
   };
 

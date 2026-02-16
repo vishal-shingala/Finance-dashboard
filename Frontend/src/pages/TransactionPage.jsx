@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
-import axios from "axios";
 import Navbar from "../components/Navbar";
 import FilterBox from "../components/FilterBox";
 import DateFormatter from "../parts/DateFormatter";
@@ -11,55 +10,18 @@ export default function TransactionsPage() {
   const { currUser, incomeDetail, expenseDetail } = useContext(UserContext);
   const { transactions } = useContext(UserContext);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
-  const [filters, setFilters] = useState({
-    startDate: "",
-    endDate: "",
-    month: "",
-    year: "",
-    category: "",
-    type: "",
-  });
+  const [isFilterApplied, setIsFilterApplied] = useState(false);
 
   useEffect(() => {
-    if (currUser) {
-      fetchTransactions();
+    if (!isFilterApplied) {
+      setFilteredTransactions([]);
     }
-  }, [currUser]);
+  }, [isFilterApplied]);
 
-  useEffect(() => {
-    fetchTransactions();
-  }, [filters]);
-
-  const fetchTransactions = async () => {
-    try {
-      const res = await axios.post("/api/v1/filtered-transactions", filters);
-      setFilteredTransactions(res.data.data);
-    } catch (error) {
-      console.error("Error fetching transactions:", error);
-    }
+  const handleFilterChange = (filterData) => {
+    setFilteredTransactions(filterData.filteredTransactions);
+    setIsFilterApplied(filterData.isFilterApplied);
   };
-
-  const resetFilter = () => {
-    setFilters({
-      startDate: "",
-      endDate: "",
-      month: "",
-      year: "",
-      category: "",
-      type: "",
-    });
-  };
-
-  const handleFilterChange = (name, value) => {
-    setFilters((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const categories = [...new Set(transactions.map((tx) => tx.category))];
-
-  const isFilterApplied = Object.values(filters).some((value) => value !== "");
 
   // Prepare data for line chart
   const { incomeData, expenseData, labels } = useMemo(() => {
@@ -132,17 +94,12 @@ export default function TransactionsPage() {
       {/* Main Content */}
       <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-dashboard">
         {/* LEFT SECTION */}
-        <div className="flex flex-col p-4 gap-4 bg-dark">
+        <div className="flex flex-col p-4 gap-4">
           {/* Filter Box */}
-          <FilterBox
-            filters={filters}
-            categories={categories}
-            onReset={resetFilter}
-            onChange={handleFilterChange}
-          />
+          <FilterBox onFilterChange={handleFilterChange} />
 
           {/* Transactions */}
-          <div className="flex-1 rounded-xl p-4 bg-gray border border-white/10">
+          <div className="flex-1 rounded-xl p-4 bg-dark border">
             <h2 className="text-white text-lg font-semibold mb-4">
               Transactions
             </h2>
@@ -182,9 +139,9 @@ export default function TransactionsPage() {
         </div>
 
         {/* RIGHT SECTION */}
-        <div className="flex flex-col p-4 gap-4 bg-dark">
+        <div className="flex flex-col p-4 gap-4 ">
           {/* Line Chart */}
-          <div className="h-1/2 rounded-xl p-4 bg-gray border border-white/10">
+          <div className="h-1/2 rounded-xl p-4 bg-dark border pb-9">
             <h2 className="text-white text-lg font-semibold mb-2">
               Income vs Expense
             </h2>
@@ -197,7 +154,7 @@ export default function TransactionsPage() {
           </div>
 
           {/* Pie Chart */}
-          <div className="h-1/2 rounded-xl p-4 bg-gray border border-white/10">
+          <div className="h-1/2 rounded-xl p-4 bg-dark border">
             <h2 className="text-white text-lg font-semibold mb-2">
               Category Breakdown
             </h2>
