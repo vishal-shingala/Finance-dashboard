@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useContext } from "react";
+import React, { useMemo } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -19,24 +19,30 @@ ChartJS.register(
   Legend
 );
 
-const ChartDashboard = ({ income, expense }) => {
-  const chartRef = useRef(null);
+const ChartDashboard = ({ income = [], expense = [], labels: externalLabels }) => {
+  const safeIncome = useMemo(
+    () => (Array.isArray(income) ? income.map((value) => Number(value) || 0) : []),
+    [income]
+  );
 
-  useEffect(() => {
-    const chart = chartRef.current;
-    if (chart) {
-      chart.resize(); // Fix spelling
+  const safeExpense = useMemo(
+    () => (Array.isArray(expense) ? expense.map((value) => Number(value) || 0) : []),
+    [expense]
+  );
+
+  const labels = useMemo(() => {
+    if (Array.isArray(externalLabels) && externalLabels.length === safeIncome.length) {
+      return externalLabels;
     }
-  }, []);
-
-  const labels = income.map((_, i) => `Day ${i + 1}`);
+    return safeIncome.map((_, i) => `Day ${i + 1}`);
+  }, [externalLabels, safeIncome]);
 
   const data = {
     labels,
     datasets: [
       {
         label: "Expenses",
-        data: expense,
+        data: safeExpense,
         borderColor: "#ef4444",
         backgroundColor: "#ef4444",
         tension: 0.4,
@@ -46,7 +52,7 @@ const ChartDashboard = ({ income, expense }) => {
       },
       {
         label: "Income",
-        data: income,
+        data: safeIncome,
         borderColor: "#22c55e",
         backgroundColor: "#22c55e",
         tension: 0.4,
@@ -100,7 +106,7 @@ const ChartDashboard = ({ income, expense }) => {
     },
   };
 
-  return <Line ref={chartRef} data={data} options={options} />;
+  return <Line data={data} options={options} />;
 };
 
 export default ChartDashboard;

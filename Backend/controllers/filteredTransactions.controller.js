@@ -5,6 +5,8 @@ import asynchandler from "../utils/asynchandler.js";
 const getFilteredTransactions = asynchandler(async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.user);
   const { startDate, endDate, month, year, category, type } = req.body;
+  const parsedMonth = Number(month);
+  const parsedYear = Number(year);
 
   let matchConditions = { userId };
 
@@ -15,17 +17,18 @@ const getFilteredTransactions = asynchandler(async (req, res) => {
     matchConditions.date = { $gte: start, $lt: end };
   } else if (startDate) {
     const start = new Date(startDate);
-    const end = new Date().getDate() + 1;
+    const end = new Date();
+    end.setDate(end.getDate() + 1);
     matchConditions.date = { $gte: start, $lt: end };
   }
 
-  if (month && year) {
-    const startMonth = new Date(year, month - 1, 1);
-    const endMonth = new Date(year, month, 1);
+  if (parsedMonth && parsedYear) {
+    const startMonth = new Date(parsedYear, parsedMonth - 1, 1);
+    const endMonth = new Date(parsedYear, parsedMonth, 1);
     matchConditions.date = { $gte: startMonth, $lt: endMonth };
-  } else if (year) {
-    const startYear = new Date(year, 0, 1);
-    const endYear = new Date(year + 1, 0, 1);
+  } else if (parsedYear) {
+    const startYear = new Date(parsedYear, 0, 1);
+    const endYear = new Date(parsedYear + 1, 0, 1);
     matchConditions.date = { $gte: startYear, $lt: endYear };
   }
   if (category) {

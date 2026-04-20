@@ -76,7 +76,7 @@ const FilterBox = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="rounded-xl p-4 bg-dark border border-gray-700">
+    <div className="rounded-xl p-4 bg-dark border ">
       <h2 className="text-white text-lg font-semibold mb-4">Filters</h2>
       <div className="flex flex-wrap gap-4">
         <div className="flex-1 min-w-0">

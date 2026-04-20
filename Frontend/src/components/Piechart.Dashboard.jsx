@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -10,9 +10,11 @@ import { UserContext } from "../context/User.context";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const PiechartDashboard = () => {
-  const {income, expense} = useContext(UserContext)
-  const data = {
+const PiechartDashboard = ({ data: externalData, className = "" }) => {
+  const { income, expense } = useContext(UserContext);
+
+  const defaultData = useMemo(
+    () => ({
     labels: ["Income", "Expense"],
     datasets: [
       {
@@ -25,11 +27,15 @@ const PiechartDashboard = () => {
         borderWidth: 2,
       },
     ],
-  };
+    }),
+    [income, expense]
+  );
+
+  const chartData = externalData ?? defaultData;
 
   const options = {
     maintainAspectRatio: false,
-    responsive:true,
+    responsive: true,
     plugins: {
       legend: {
         labels: {
@@ -46,8 +52,10 @@ const PiechartDashboard = () => {
   };
 
   return (
-    <div className="bg-dark rounded-xl md:w-[50rem] h-[25rem] shadow-lg p-6 animate-fade-in-up flex flex-col items-center">
-      <Pie data={data} options={options} />
+    <div
+      className={`bg-dark rounded-xl md:w-[50rem] h-[25rem] shadow-lg p-6 animate-fade-in-up flex flex-col items-center ${className}`}
+    >
+      <Pie data={chartData} options={options} />
     </div>
   );
 };

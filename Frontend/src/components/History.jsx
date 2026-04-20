@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "../context/User.context";
-import DateFormatter from "../parts/DateFormatter";
+import DateFormatter from "../parts/DateFormatter"; // Default import works now
 
 const History = () => {
   const {transactions} = useContext(UserContext)

@@ -125,3 +125,37 @@
   color: var(--primary-accent);
 }
 
+/* ---------------------------------------- */
+/* Scrollbar: transparent utility
+   - Works on WebKit and Firefox
+   - Keeps scrolling functional while visually transparent
+*/
+.scrollbar-transparent {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  -ms-overflow-style: none;
+}
+
+/* .scrollbar-transparent::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-transparent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-transparent::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 8px;
+}
+
+Optional: slight visible thumb on hover for discoverability */
+.scrollbar-transparent:hover::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.06);
+}
+
+.scrollbar-transparent:hover {
+  scrollbar-color: rgba(255,255,255,0.06) transparent;
+}
+

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import Navbar from "../components/Navbar";
 import FilterBox from "../components/FilterBox";
-import DateFormatter from "../parts/DateFormatter";
+import DateFormatter, { DateFormat } from "../parts/DateFormatter";
 import ChartDashboard from "../components/Chart.Dashboard";
 import PiechartDashboard from "../components/Piechart.Dashboard";
 import { UserContext } from "../context/User.context";
@@ -28,8 +28,9 @@ export default function TransactionsPage() {
     if (isFilterApplied) {
       const dailyData = filteredTransactions.reduce((acc, tx) => {
         const date = new Date(tx.date).toLocaleDateString();
+        console.log(date)
         if (!acc[date]) acc[date] = { income: 0, expense: 0 };
-        acc[date][tx.type] += tx.amount;
+        acc[date][tx.type] += Number(tx.amount);
         return acc;
       }, {});
       const sortedDates = Object.keys(dailyData).sort(
@@ -37,7 +38,9 @@ export default function TransactionsPage() {
       );
       const inc = sortedDates.map((date) => dailyData[date].income);
       const exp = sortedDates.map((date) => dailyData[date].expense);
-      return { incomeData: inc, expenseData: exp, labels: sortedDates };
+      const formattedLabels = sortedDates.map((date) => DateFormat(date));
+
+      return { incomeData: inc, expenseData: exp, labels: formattedLabels };
     } else {
       return {
         incomeData: incomeDetail,
@@ -52,7 +55,7 @@ export default function TransactionsPage() {
     () =>
       isFilterApplied
         ? filteredTransactions
-        : transactions
+        : [...transactions]
             .sort((a, b) => new Date(b.date) - new Date(a.date))
             .slice(0, 10),
     [isFilterApplied, filteredTransactions, transactions]
@@ -63,7 +66,7 @@ export default function TransactionsPage() {
     const categoryTotals = (
       isFilterApplied ? filteredTransactions : transactions
     ).reduce((acc, tx) => {
-      acc[tx.category] = (acc[tx.category] || 0) + tx.amount;
+      acc[tx.category] = (acc[tx.category] || 0) + (Number(tx.amount) || 0);
       return acc;
     }, {});
     return {
@@ -99,39 +102,66 @@ export default function TransactionsPage() {
           <FilterBox onFilterChange={handleFilterChange} />
 
           {/* Transactions */}
-          <div className="flex-1 rounded-xl p-4 bg-dark border">
-            <h2 className="text-white text-lg font-semibold mb-4">
+          <div className="flex-1 rounded-2xl p-4 md:p-5 bg-dark border border-white shadow-[0_18px_40px_rgba(0,0,0,0.35)]">
+            <h2 className="text-white text-lg font-semibold mb-4 tracking-wide">
               Transactions
             </h2>
 
-            <div className="space-y-2">
+            <div className="space-y-3 overflow-y-auto pr-1 max-h-[35rem] scrollbar-transparent">
               {displayTransactions.length === 0 ? (
                 <div className="text-sm text-gray text-center">
                   No transactions
                 </div>
               ) : (
                 displayTransactions.map((tx, index) => (
-                  <div className="flex justify-between items-start bg-[#111827] rounded-md px-3 py-2">
-                    {/* Amount */}
-                    <div
-                      className="text-md font-bold"
-                      style={{
-                        color: tx.type === "income" ? "#22c55e" : "#ef4444",
-                      }}
-                    >
-                      {tx.type === "income"
-                        ? `+₹${tx.amount}`
-                        : `-₹${Math.abs(tx.amount)}`}
-                    </div>
+                  <article
+                    key={tx._id || `${tx.date}-${tx.category}-${index}`}
+                    className="group rounded-xl border border-white/10 bg-gradient-to-r from-[#101827] to-[#0f1723] px-4 py-3 transition-all duration-300 hover:border-white/20 hover:-translate-y-[1px]"
+                    style={{ animationDelay: `${index * 0.06}s` }}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-start gap-3 min-w-0">
+                        <span
+                          className="mt-1 h-2.5 w-2.5 rounded-full"
+                          style={{
+                            backgroundColor:
+                              tx.type === "income" ? "#22c55e" : "#ef4444",
+                          }}
+                        />
+                        <div className="min-w-0">
+                          <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">
+                            Category
+                          </p>
+                          <p className="truncate text-sm md:text-base font-semibold text-white">
+                            {tx.category}
+                          </p>
+                          <p className="text-[11px] uppercase tracking-[0.18em] text-gray-500 mt-2">
+                            Date & Time
+                          </p>
+                          <p className="text-xs text-gray-300">
+                            <DateFormatter isodate={tx.date} />
+                          </p>
+                        </div>
+                      </div>
 
-                    {/* Category and Date */}
-                    <div className="text-right text-sm">
-                      <div className="font-medium text-white" >{tx.category}</div>
-                      <div className="text-gray-400 text-xs">
-                        <DateFormatter isodate={tx.date} />
+                      <div className="text-right shrink-0">
+                        <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">
+                          Amount
+                        </p>
+                        <p
+                          className="text-lg md:text-xl font-extrabold"
+                          style={{
+                            color:
+                              tx.type === "income" ? "#22c55e" : "#ef4444",
+                          }}
+                        >
+                          {tx.type === "income"
+                            ? `+₹${tx.amount}`
+                            : `-₹${Math.abs(tx.amount)}`}
+                        </p>
                       </div>
                     </div>
-                  </div>
+                  </article>
                 ))
               )}
             </div>
@@ -141,7 +171,7 @@ export default function TransactionsPage() {
         {/* RIGHT SECTION */}
         <div className="flex flex-col p-4 gap-4 ">
           {/* Line Chart */}
-          <div className="h-1/2 rounded-xl p-4 bg-dark border pb-9">
+          <div className="min-h-[320px] md:h-[360px] rounded-xl p-4 bg-dark border pb-9">
             <h2 className="text-white text-lg font-semibold mb-2">
               Income vs Expense
             </h2>
@@ -154,12 +184,21 @@ export default function TransactionsPage() {
           </div>
 
           {/* Pie Chart */}
-          <div className="h-1/2 rounded-xl p-4 bg-dark border">
+          <div className="min-h-[320px] max-h-[31rem] rounded-xl p-4 bg-dark border">
             <h2 className="text-white text-lg font-semibold mb-2">
               Category Breakdown
             </h2>
 
-            {/* <Pie data={pieData} /> */}
+            {pieData.labels.length > 0 ? (
+              <PiechartDashboard
+                data={pieData}
+                className="h-[calc(100%-2rem)] w-full md:w-full p-2 md:p-3 shadow-none"
+              />
+            ) : (
+              <div className="h-[calc(100%-2rem)] flex items-center justify-center text-sm text-gray">
+                No transaction data for chart
+              </div>
+            )}
           </div>
         </div>
       </div>
