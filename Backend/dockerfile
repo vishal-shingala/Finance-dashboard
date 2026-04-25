@@ -1,0 +1,16 @@
+FROM node:22
+
+WORKDIR /FINANCE-DASHBOARD/BACKEND
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
+
+
+

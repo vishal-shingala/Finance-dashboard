@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { API_URL } from "../config";
 import toast from 'react-hot-toast';
 import { UserContext } from "../context/User.context";
 
@@ -15,7 +16,7 @@ const Login = () => {
   
   const loginMutation = useMutation({
     mutationFn: async (data) => {
-      const res = await axios.post("http://localhost:3000/api/v1/login", data, {
+      const res = await axios.post(`${API_URL}/login`, data, {
         withCredentials: true
       });
       return res.data;

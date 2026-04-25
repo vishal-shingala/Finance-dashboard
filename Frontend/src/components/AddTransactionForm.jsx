@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { API_URL } from "../config";
 import toast from "react-hot-toast";
 
 export default function AddTransactionForm({ isOpen, onClose }) {
@@ -16,7 +17,7 @@ export default function AddTransactionForm({ isOpen, onClose }) {
   const mutation = useMutation({
     mutationFn: async (data) => {
       const res = await axios.post(
-        "http://localhost:3000/api/v1/transaction",
+        `${API_URL}/transaction`,
         data
       );
       return res.data;

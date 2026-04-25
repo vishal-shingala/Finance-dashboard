@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    volumes:
+      - ./Backend:/FINANCE-DASHBOARD/BACKEND
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://backend:3000/api/v1
+    volumes:
+      - ./Frontend:/FINANCE-DASHBOARD/FRONTEND
+    depends_on:
+      - backend
+    restart: unless-stopped

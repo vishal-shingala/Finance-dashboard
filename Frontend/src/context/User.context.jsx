@@ -3,9 +3,10 @@ import AddTransactionForm from "../components/AddTransactionForm";
 import { useMutation } from "@tanstack/react-query";
 import { useMutations } from "../hooks/Mutations";
 import axios from "axios";
+import { API_URL } from "../config";
 import toast from "react-hot-toast";
 
-axios.defaults.baseURL = "http://localhost:3000";
+axios.defaults.baseURL = API_URL.replace(/\/$/, "");
 axios.defaults.withCredentials = true;
 
 const UserContext = createContext();

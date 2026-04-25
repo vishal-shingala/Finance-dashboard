@@ -5,6 +5,7 @@ import { UserContext } from "../context/User.context";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { API_URL } from "../config";
 import toast from "react-hot-toast";
 
 const Register = () => {
@@ -15,7 +16,7 @@ const Register = () => {
 
   const registerMutation = useMutation({
     mutationFn: async (formData) => {
-      const res = await axios.post("http://localhost:3000/api/v1/register", formData, {
+      const res = await axios.post(`${API_URL}/register`, formData, {
         withCredentials:true
       });
       return res.data;

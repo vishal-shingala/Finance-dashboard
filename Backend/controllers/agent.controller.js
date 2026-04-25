@@ -1,122 +1,184 @@
 import { AgentExecutor, createToolCallingAgent } from "langchain/agents";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { DynamicTool } from "@langchain/core/tools"; 
+import { DynamicTool } from "@langchain/core/tools";
 import llm from "../config/groq.config.js";
 import asynchandler from "../utils/asynchandler.js";
-import { MongoClient, ObjectId } from "mongodb";
+import { ObjectId } from "mongodb";
 import z from "zod";
 import mongoose from "mongoose";
 
-const dbPromise = (async () => {
-  try {
-    if (mongoose.connection && mongoose.connection.db) return mongoose.connection.db;
-    await new Promise((resolve, reject) => {
-      mongoose.connection.once('connected', resolve);
-      mongoose.connection.once('error', reject);
-    });
+/* ---------------------- DB CONNECTION ---------------------- */
+const getDB = async () => {
+  if (mongoose.connection.readyState === 1) {
     return mongoose.connection.db;
-  } catch (error) {
-    console.error("Failed to get MongoDB client:", error);
-    throw error;
   }
-})();
+
+  return new Promise((resolve, reject) => {
+    mongoose.connection.once("connected", () => {
+      resolve(mongoose.connection.db);
+    });
+    mongoose.connection.once("error", reject);
+  });
+};
+
+/* ---------------------- VALIDATION ---------------------- */
+const allowedStages = ["$match", "$group", "$project", "$sort", "$limit"];
+
+const validatePipeline = (pipeline) => {
+  if (!Array.isArray(pipeline)) {
+    throw new Error("Pipeline must be an array");
+  }
+
+  for (const stage of pipeline) {
+    const key = Object.keys(stage)[0];
+
+    if (!allowedStages.includes(key)) {
+      throw new Error(`Disallowed stage: ${key}`);
+    }
+  }
+};
+
+/* ---------------------- AGENT CONTROLLER ---------------------- */
 const Agent = asynchandler(async (req, res) => {
   const userId = req.user;
+
   if (!userId) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
+  const currentYear = new Date().getFullYear();
+
+  /* ---------------------- TOOL ---------------------- */
   const userTransactionsQueryTool = new DynamicTool({
     name: "query_user_transactions",
     description: `
-    Use this tool to query the user's financial transactions from a MongoDB database.
-    The input MUST be a valid MongoDB aggregate pipeline passed as a single JSON string.
-    use only ruppe sybmol to display amount and unneccsary symbols.
-    Available fields are: 'amount' (number), 'category' (string), 'type' (string), and 'date' (a BSON Date object).
+Query user's financial transactions using MongoDB aggregation pipeline.
 
-    **CRITICAL**: For queries about a specific month, you MUST use the '$expr' operator with '$month' and '$year'. The current year is 2025.
-    For example, to get total expenses by category for August 2025, the pipeline should be a JSON string like this:
-    '[{"$match":{"type":"expense","$expr":{"$and":[{"$eq":[{"$month":"$date"},8]},{"$eq":[{"$year":"$date"},2025]}]}}},{"$group":{"_id":"$category","total":{"$sum":"$amount"}}}]'
-    
-    For queries about a specific day, you can use '$gte' and '$lt' with full ISO date strings.
-    `,
-    schema: z
-      .string()
-      .describe("A valid MongoDB aggregate pipeline as a JSON string."),
+Rules:
+- Input MUST be valid JSON array string
+- Allowed stages: $match, $group, $project, $sort, $limit
+- ALWAYS filter by type when needed (expense/income)
+- Use ₹ symbol for currency
+
+Date Rules:
+- For month queries: use $expr with $month and $year (${currentYear})
+- For day queries: use $gte and $lt with ISO dates
+
+Example:
+[
+  {
+    "$match": {
+      "type": "expense",
+      "$expr": {
+        "$and": [
+          { "$eq": [{ "$month": "$date" }, 8] },
+          { "$eq": [{ "$year": "$date" }, ${currentYear}] }
+        ]
+      }
+    }
+  },
+  {
+    "$group": {
+      "_id": "$category",
+      "total": { "$sum": "$amount" }
+    }
+  }
+]
+`,
+    schema: z.string(),
 
     func: async (pipelineString) => {
-      console.log("Received pipeline string from LLM:", pipelineString);
-
-      if (typeof pipelineString !== "string" || pipelineString.trim() === "") {
-        return "Error: Received an empty or invalid pipeline string.";
-      }
-
       try {
-        const correctedJsonString = pipelineString.replace(/\}\s*\{/g, "}, {");
-
-        let pipeline = JSON.parse(correctedJsonString);
-
-        for (const stage of pipeline) {
-          if (stage.$match && stage.$match.date) {
-            const dateFilter = stage.$match.date;
-            for (const op of ["$gte", "$lt", "$eq"]) {
-              if (dateFilter[op]) {
-                if (
-                  typeof dateFilter[op] === "object" &&
-                  dateFilter[op].$date
-                ) {
-                  dateFilter[op] = new Date(dateFilter[op].$date);
-                }
-                else if (typeof dateFilter[op] === "string") {
-                  dateFilter[op] = new Date(dateFilter[op]);
-                }
-              }
-            }
-          }
+        if (!pipelineString || typeof pipelineString !== "string") {
+          throw new Error("Invalid pipeline input");
         }
 
-        const securePipeline = [{ $match: { userId: new ObjectId(userId) } }, ...pipeline];
+        // Strict JSON parse
+        let pipeline = JSON.parse(pipelineString);
 
-        console.log(
-          "Executing secure pipeline with correct Date objects:",
-          JSON.stringify(securePipeline, null, 2)
-        );
+        // Validate structure
+        validatePipeline(pipeline);
 
-        const db = await dbPromise;
+        // Secure pipeline (force user isolation)
+        const securePipeline = [
+          { $match: { userId: new ObjectId(userId) } },
+          ...pipeline,
+        ];
+
+        const db = await getDB();
+
         const results = await db
           .collection("transactions")
           .aggregate(securePipeline)
           .toArray();
+
         return JSON.stringify(results);
       } catch (error) {
-        console.error("Error executing tool:", error);
-        return `Error executing query: ${error.message}`;
+        console.error("Tool error:", error.message);
+        return `Error: ${error.message}`;
       }
     },
   });
 
   const tools = [userTransactionsQueryTool];
 
+  /* ---------------------- PROMPT ---------------------- */
   const prompt = ChatPromptTemplate.fromMessages([
     [
       "system",
-      "You are an expert at creating MongoDB aggregation pipelines based on user questions about their finances. You must use the provided tool. Return only the final answer in a clear, complete sentence.",
+      `
+You are a MongoDB aggregation expert.
+
+STRICT RULES:
+- ALWAYS call the tool
+- NEVER answer without tool
+- Output must be a valid JSON pipeline string
+- NO explanations
+- ONLY allowed stages: $match, $group, $project, $sort, $limit
+- NEVER generate invalid JSON
+
+Final response must be a clean human-readable answer.
+`,
     ],
     ["human", "{input}"],
     ["placeholder", "{agent_scratchpad}"],
   ]);
 
-  const agent = await createToolCallingAgent({ llm, tools, prompt });
+  /* ---------------------- AGENT ---------------------- */
+  const agent = await createToolCallingAgent({
+    llm,
+    tools,
+    prompt,
+  });
 
-  const executor = new AgentExecutor({ agent, tools });
+  const executor = new AgentExecutor({
+    agent,
+    tools,
+  });
 
   const userInput = req.body.question;
 
   const result = await executor.invoke({ input: userInput });
 
+  /* ---------------------- RESPONSE CLEANING ---------------------- */
+  let finalAnswer = result.output;
+
+  try {
+    const parsed = JSON.parse(result.output);
+
+    if (Array.isArray(parsed)) {
+      finalAnswer =
+        parsed.length === 0
+          ? "No transactions found."
+          : JSON.stringify(parsed, null, 2);
+    }
+  } catch {
+    // keep original output
+  }
+
   res.status(200).json({
     question: userInput,
-    answer: result.output,
+    answer: finalAnswer,
   });
 });
 
