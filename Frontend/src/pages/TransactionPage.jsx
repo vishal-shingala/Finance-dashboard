@@ -95,19 +95,19 @@ export default function TransactionsPage() {
       </div>
 
       {/* Main Content */}
-      <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-dashboard">
+      <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-3 bg-dashboard">
         {/* LEFT SECTION */}
-        <div className="flex flex-col p-4 gap-4">
+        <div className="flex flex-col p-3 sm:p-4 gap-3 sm:gap-4">
           {/* Filter Box */}
           <FilterBox onFilterChange={handleFilterChange} />
 
           {/* Transactions */}
-          <div className="flex-1 rounded-2xl p-4 md:p-5 bg-dark border border-white shadow-[0_18px_40px_rgba(0,0,0,0.35)]">
+          <div className="flex-1 rounded-2xl p-3 sm:p-4 md:p-5 bg-dark border border-white shadow-[0_18px_40px_rgba(0,0,0,0.35)]">
             <h2 className="text-white text-lg font-semibold mb-4 tracking-wide">
               Transactions
             </h2>
 
-            <div className="space-y-3 overflow-y-auto pr-1 max-h-[35rem] scrollbar-transparent">
+            <div className="space-y-3 overflow-y-auto pr-1 max-h-[25rem] sm:max-h-[35rem] md:max-h-[50rem] scrollbar-transparent">
               {displayTransactions.length === 0 ? (
                 <div className="text-sm text-gray text-center">
                   No transactions
@@ -119,33 +119,33 @@ export default function TransactionsPage() {
                     className="group rounded-xl border border-white/10 bg-gradient-to-r from-[#101827] to-[#0f1723] px-4 py-3 transition-all duration-300 hover:border-white/20 hover:-translate-y-[1px]"
                     style={{ animationDelay: `${index * 0.06}s` }}
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-start gap-3 min-w-0">
+                    <div className="flex items-start justify-between gap-2 sm:gap-4">
+                      <div className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
                         <span
-                          className="mt-1 h-2.5 w-2.5 rounded-full"
+                          className="mt-1 h-2.5 w-2.5 rounded-full flex-shrink-0"
                           style={{
                             backgroundColor:
                               tx.type === "income" ? "#22c55e" : "#ef4444",
                           }}
                         />
                         <div className="min-w-0">
-                          <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">
+                          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-gray-400">
                             Category
                           </p>
-                          <p className="truncate text-sm md:text-base font-semibold text-white">
+                          <p className="truncate text-xs sm:text-sm md:text-base font-semibold text-white">
                             {tx.category}
                           </p>
-                          <p className="text-[11px] uppercase tracking-[0.18em] text-gray-500 mt-2">
+                          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-gray-500 mt-1 sm:mt-2">
                             Date & Time
                           </p>
-                          <p className="text-xs text-gray-300">
+                          <p className="text-[10px] sm:text-xs text-gray-300">
                             <DateFormatter isodate={tx.date} />
                           </p>
                         </div>
                       </div>
 
                       <div className="text-right shrink-0">
-                        <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">
+                        <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-gray-400">
                           Amount
                         </p>
                         <p
@@ -169,10 +169,10 @@ export default function TransactionsPage() {
         </div>
 
         {/* RIGHT SECTION */}
-        <div className="flex flex-col p-4 gap-4 ">
+        <div className="flex flex-col p-3 sm:p-4 gap-3 sm:gap-4 ">
           {/* Line Chart */}
-          <div className="min-h-[320px] md:h-[360px] rounded-xl p-4 bg-dark border pb-9">
-            <h2 className="text-white text-lg font-semibold mb-2">
+          <div className="h-[300px] sm:h-[300px] md:h-[400px] rounded-xl p-3 sm:p-4 bg-dark border pb-6 sm:pb-9">
+            <h2 className="text-white text-sm sm:text-base md:text-lg font-semibold mb-2 sm:mb-3">
               Income vs Expense
             </h2>
 
@@ -184,18 +184,18 @@ export default function TransactionsPage() {
           </div>
 
           {/* Pie Chart */}
-          <div className="min-h-[320px] max-h-[31rem] rounded-xl p-4 bg-dark border">
-            <h2 className="text-white text-lg font-semibold mb-2">
+          <div className="min-h-[280px] sm:min-h-[320px] max-h-[31rem] rounded-xl p-3 sm:p-4 bg-dark border flex flex-col items-center justify-center">
+            <h2 className="text-white text-sm sm:text-base md:text-lg font-semibold mb-2 sm:mb-3 w-full">
               Category Breakdown
             </h2>
 
             {pieData.labels.length > 0 ? (
               <PiechartDashboard
                 data={pieData}
-                className="h-[calc(100%-2rem)] w-full md:w-full p-2 md:p-3 shadow-none"
+                className="h-[calc(100%-2rem)] w-full md:w-full p-1 sm:p-2 md:p-3 shadow-none"
               />
             ) : (
-              <div className="h-[calc(100%-2rem)] flex items-center justify-center text-sm text-gray">
+              <div className="h-[calc(100%-2rem)] flex items-center justify-center text-xs sm:text-sm text-gray">
                 No transaction data for chart
               </div>
             )}

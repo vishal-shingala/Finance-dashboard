@@ -48,6 +48,7 @@ const BarChartDashboard = () => {
       legend: {
         labels: {
           color: "#fff",
+          font: { size: window.innerWidth < 640 ? 11 : 13 },
         },
       },
       tooltip: {
@@ -58,12 +59,13 @@ const BarChartDashboard = () => {
     },
     scales: {
       x: {
-        ticks: { color: "#fff" },
+        ticks: { color: "#fff", font: { size: window.innerWidth < 640 ? 10 : 12 } },
         grid: { color: "#444" },
       },
       y: {
         ticks: {
           color: "#fff",
+          font: { size: window.innerWidth < 640 ? 10 : 12 },
           callback: function (value) {
             return `₹${value}`;
           },
@@ -74,8 +76,8 @@ const BarChartDashboard = () => {
   };
 
   return (
-    <div className="w-full md:w-[50rem] h-[400px] bg-dark p-4 rounded-lg shadow-md sm:mb-2">
-      <h2 className="text-white text-lg font-bold">Category-wise Expenses</h2>
+    <div className="w-full h-[200px] sm:h-[300px] md:h-[400px] bg-dark p-2 sm:p-3 md:p-4 rounded-lg shadow-md border border-white">
+      <h2 className="text-white text-sm sm:text-base md:text-lg font-bold mb-2">Category-wise Expenses</h2>
       <Bar data={data} options={options} />
     </div>
   );

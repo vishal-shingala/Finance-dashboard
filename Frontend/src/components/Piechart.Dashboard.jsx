@@ -40,7 +40,7 @@ const PiechartDashboard = ({ data: externalData, className = "" }) => {
       legend: {
         labels: {
           color: "#fff",
-          font: { size: 16 },
+          font: { size: window.innerWidth < 640 ? 12 : 14 },
         },
       },
       tooltip: {
@@ -53,7 +53,7 @@ const PiechartDashboard = ({ data: externalData, className = "" }) => {
 
   return (
     <div
-      className={`bg-dark rounded-xl md:w-[50rem] h-[25rem] shadow-lg p-6 animate-fade-in-up flex flex-col items-center ${className}`}
+      className={`bg-dark rounded-xl w-full md:w-[30rem] h-[200px] sm:h-[250px] md:h-[25rem] shadow-lg p-3 sm:p-4 md:p-6 animate-fade-in-up flex flex-col items-center border border-white ${className}`}
     >
       <Pie data={chartData} options={options} />
     </div>

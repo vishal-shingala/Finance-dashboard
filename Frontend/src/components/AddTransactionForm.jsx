@@ -45,11 +45,11 @@ export default function AddTransactionForm({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
+    <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
 
       <div
-        className="relative w-96 sm:w-96 p-6 rounded-2xl
+        className="relative w-full sm:w-96 p-5 sm:p-6 rounded-2xl max-h-[90vh] overflow-y-auto
                   bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900
                   border border-gray-700 shadow-xl shadow-blue-500/10 
                   animate-slide-up"

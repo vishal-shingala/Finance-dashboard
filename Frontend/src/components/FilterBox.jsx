@@ -76,38 +76,38 @@ const FilterBox = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="rounded-xl p-4 bg-dark border ">
-      <h2 className="text-white text-lg font-semibold mb-4">Filters</h2>
-      <div className="flex flex-wrap gap-4">
-        <div className="flex-1 min-w-0">
-          <label className="block text-xs font-medium mb-2 text-gray-300 uppercase tracking-wide">Start Date</label>
+    <div className="rounded-xl p-3 sm:p-4 bg-dark border ">
+      <h2 className="text-white text-base sm:text-lg font-semibold mb-3 sm:mb-4">Filters</h2>
+      <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
+        <div className="w-full sm:flex-1 sm:min-w-0">
+          <label className="block text-xs font-medium mb-1 text-gray-300 uppercase tracking-wide">Start Date</label>
           <input
             type="date"
             name="startDate"
             value={filters.startDate}
             onChange={(e) => handleFilterChange(e.target.name, e.target.value)}
-            className="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white text-sm focus:outline-none focus:border-indigo-500"
+            className="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white text-xs sm:text-sm focus:outline-none focus:border-indigo-500"
             placeholder="mm/dd/yyyy"
           />
         </div>
-        <div className="flex-1 min-w-0">
-          <label className="block text-xs font-medium mb-2 text-gray-300 uppercase tracking-wide">End Date</label>
+        <div className="w-full sm:flex-1 sm:min-w-0">
+          <label className="block text-xs font-medium mb-1 text-gray-300 uppercase tracking-wide">End Date</label>
           <input
             type="date"
             name="endDate"
             value={filters.endDate}
             onChange={(e) => handleFilterChange(e.target.name, e.target.value)}
-            className="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white text-sm focus:outline-none focus:border-indigo-500"
+            className="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white text-xs sm:text-sm focus:outline-none focus:border-indigo-500"
             placeholder="mm/dd/yyyy"
           />
         </div>
-        <div className="flex-1 min-w-0">
-          <label className="block text-xs font-medium mb-2 text-gray-300 uppercase tracking-wide">Month</label>
+        <div className="w-full sm:flex-1 sm:min-w-0">
+          <label className="block text-xs font-medium mb-1 text-gray-300 uppercase tracking-wide">Month</label>
           <select
             name="month"
             value={filters.month}
             onChange={(e) => handleFilterChange(e.target.name, e.target.value)}
-            className="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white text-sm focus:outline-none focus:border-indigo-500"
+            className="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white text-xs sm:text-sm focus:outline-none focus:border-indigo-500"
           >
             <option value="">All</option>
             {Array.from({ length: 12 }, (_, i) => (
@@ -117,13 +117,13 @@ const FilterBox = ({ onFilterChange }) => {
             ))}
           </select>
         </div>
-        <div className="flex-1 min-w-0">
-          <label className="block text-xs font-medium mb-2 text-gray-300 uppercase tracking-wide">Year</label>
+        <div className="w-full sm:flex-1 sm:min-w-0">
+          <label className="block text-xs font-medium mb-1 text-gray-300 uppercase tracking-wide">Year</label>
           <select
             name="year"
             value={filters.year}
             onChange={(e) => handleFilterChange(e.target.name, e.target.value)}
-            className="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white text-sm focus:outline-none focus:border-indigo-500"
+            className="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white text-xs sm:text-sm focus:outline-none focus:border-indigo-500"
           >
             <option value="">All</option>
             {yearRange.map((year) => (
@@ -133,13 +133,13 @@ const FilterBox = ({ onFilterChange }) => {
             ))}
           </select>
         </div>
-        <div className="flex-1 min-w-0">
-          <label className="block text-xs font-medium mb-2 text-gray-300 uppercase tracking-wide">Category</label>
+        <div className="w-full sm:flex-1 sm:min-w-0">
+          <label className="block text-xs font-medium mb-1 text-gray-300 uppercase tracking-wide">Category</label>
           <select
             name="category"
             value={filters.category}
             onChange={(e) => handleFilterChange(e.target.name, e.target.value)}
-            className="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white text-sm focus:outline-none focus:border-indigo-500"
+            className="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white text-xs sm:text-sm focus:outline-none focus:border-indigo-500"
           >
             <option value="">All</option>
             {dbCategories.map((cat) => (
@@ -149,13 +149,13 @@ const FilterBox = ({ onFilterChange }) => {
             ))}
           </select>
         </div>
-        <div className="flex-1 min-w-0">
-          <label className="block text-xs font-medium mb-2 text-gray-300 uppercase tracking-wide">Type</label>
+        <div className="w-full sm:flex-1 sm:min-w-0">
+          <label className="block text-xs font-medium mb-1 text-gray-300 uppercase tracking-wide">Type</label>
           <select
             name="type"
             value={filters.type}
             onChange={(e) => handleFilterChange(e.target.name, e.target.value)}
-            className="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white text-sm focus:outline-none focus:border-indigo-500"
+            className="w-full p-2 bg-gray-900 border border-gray-700 rounded text-white text-xs sm:text-sm focus:outline-none focus:border-indigo-500"
           >
             <option value="">All</option>
             <option value="income">Income</option>
@@ -163,18 +163,18 @@ const FilterBox = ({ onFilterChange }) => {
           </select>
         </div>
       </div>
-      <div className="flex gap-2 mt-4">
+      <div className="flex flex-col sm:flex-row gap-2 mt-3 sm:mt-4">
         <button
           type="button"
           onClick={handleApplyFilters}
-          className="flex-1 p-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 font-medium transition"
+          className="flex-1 p-2 bg-indigo-600 text-white rounded hover:bg-indigo-500 font-medium transition text-sm"
         >
           Apply Filters
         </button>
         <button
           type="button"
           onClick={resetFilter}
-          className="flex-1 p-2 bg-gray-700 text-white rounded hover:bg-gray-600 font-medium transition"
+          className="flex-1 p-2 bg-gray-700 text-white rounded hover:bg-gray-600 font-medium transition text-sm"
         >
           Reset Filters
         </button>

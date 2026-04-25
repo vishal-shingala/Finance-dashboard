@@ -19,10 +19,9 @@ const CalendarDashboard = () => {
   const {selectMonth,setSelectMonth,selectYear,setSelectYear,registerYear} = useContext(UserContext);
   const currYear = new Date().getFullYear()
   const year = generateRangeLoop(registerYear,currYear)
-  console.log(year);
   
   return (
-    <div className="bg-dark rounded-xl shadow-lg p-6 animate-fade-in-up max-h-[500px]">
+    <div className="bg-dark rounded-xl shadow-lg p-6 animate-fade-in-up max-h-[500px] border border-white">
       <div className="text-white text-xl font-bold mb-4 text-center">
         <select value={selectYear} onChange={(e) => setSelectYear(Number(e.target.value))} name="year" id="year" className="bg-dark text-white rounded-lg p-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-accent">
           {year.map((val)=>{
@@ -34,7 +33,7 @@ const CalendarDashboard = () => {
         {mothNum.map((month) => (
           <div
             key={month} 
-            onClick={() => {setSelectMonth(month+1); console.log(month+1);}
+            onClick={() => {setSelectMonth(month+1);}
             }
             
             className={`${

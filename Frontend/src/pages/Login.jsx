@@ -51,18 +51,20 @@ const Login = () => {
       <div className="absolute top-1/2 -right-20 w-[500px] h-[500px] bg-blue-600 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-4000"></div>
 
       {/* Login Card */}
-      <div className="z-10 bg-white/10 backdrop-blur-lg shadow-xl rounded-xl p-8 max-w-md w-full text-white">
+      <div className="z-10 bg-white/10 backdrop-blur-lg shadow-xl rounded-xl p-6 sm:p-8 max-w-sm sm:max-w-md w-full text-white">
         {/* FinDash Animated Title */}
-        <h1 className="text-5xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 text-transparent bg-clip-text animate-pulse text-center mb-6 tracking-widest">
+        <h1 className="text-3xl sm:text-5xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 text-transparent bg-clip-text animate-pulse text-center mb-4 sm:mb-6 tracking-widest">
           FinDash
         </h1>
 
-        <h2 className="text-2xl font-semibold text-center mb-6">
+        <h2 className="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6">
           Welcome Back
         </h2>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}
+          className="space-y-3 sm:space-y-4"
+        >
           {/* Email */}
           <label className="block mb-2 text-sm">Email</label>
           <input

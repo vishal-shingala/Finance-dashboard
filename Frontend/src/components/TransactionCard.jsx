@@ -4,10 +4,9 @@ import { UserContext } from "../context/User.context.jsx";
 
 const TransactionCard = () => {
   const { income, expense } = useContext(UserContext);
-  console.log(income);
 
   return (
-    <div className=" flex flex-col gap-1 w-full md:flex-row">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-3 w-full items-stretch">
       <Card className="text-green-500" type={"Income"} amount={income || 0} />
       <Card className="text-red-500" type={"Expense"} amount={expense || 0} />
       <Card
