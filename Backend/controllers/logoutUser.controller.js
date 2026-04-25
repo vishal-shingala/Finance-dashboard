@@ -1,10 +1,11 @@
 const logoutUser = (req, res) => {
   try {
+    const isProduction = process.env.NODE_ENV === "production";
     res.clearCookie("jwt", {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: process.env.NODE_ENV !== "development",
-  });
+      httpOnly: true,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
+    });
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     console.log(error);

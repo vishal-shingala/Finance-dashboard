@@ -13,10 +13,11 @@ const verifyToken = (value) => {
 
 const generateToken = (userId,res) =>{
   const token = createToken(userId);
+  const isProduction = process.env.NODE_ENV === "production";
   res.cookie("jwt", token, {
     httpOnly: true,
-    secure: true,
-    sameSite: "Strict",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
   });
   return token;
 }
