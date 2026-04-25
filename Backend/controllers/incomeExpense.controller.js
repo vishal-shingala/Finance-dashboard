@@ -1,14 +1,20 @@
 import mongoose from "mongoose";
 import Transaction from "../model/transaction.model.js";
 import asynchandler from "../utils/asynchandler.js";
+import { createLogger } from "../utils/logger.js";
+
+const logger = createLogger("income-expense");
 
 const showIncomeExpense = asynchandler(async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.user);
-  console.log(req.body);
   
   const month = Number(req.body.month);
   const year = req.body.year || new Date().getFullYear();
-  console.log(month);
+  logger.info("Income/expense summary request received", {
+    userId: req.user,
+    month,
+    year,
+  });
   
 
   const result = await Transaction.aggregate([
@@ -64,7 +70,12 @@ const showIncomeExpense = asynchandler(async (req, res) => {
     },
   ]);
 
-  console.log("Income and Expense Data:", result);
+  logger.info("Income/expense summary fetched", {
+    userId: req.user,
+    month,
+    year,
+    records: result?.length || 0,
+  });
   return res.status(200).json({
     success: true,
     message: "Income and Expense data fetched successfully",

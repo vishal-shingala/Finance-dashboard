@@ -6,6 +6,9 @@ import asynchandler from "../utils/asynchandler.js";
 import { ObjectId } from "mongodb";
 import z from "zod";
 import mongoose from "mongoose";
+import { createLogger } from "../utils/logger.js";
+
+const logger = createLogger("agent");
 
 /* ---------------------- DB CONNECTION ---------------------- */
 const getDB = async () => {
@@ -31,7 +34,6 @@ const validatePipeline = (pipeline) => {
 
   for (const stage of pipeline) {
     const key = Object.keys(stage)[0];
-
     if (!allowedStages.includes(key)) {
       throw new Error(`Disallowed stage: ${key}`);
     }
@@ -55,51 +57,24 @@ const Agent = asynchandler(async (req, res) => {
 Query user's financial transactions using MongoDB aggregation pipeline.
 
 Rules:
-- Input MUST be valid JSON array string
+- Input must be JSON with key "pipeline"
 - Allowed stages: $match, $group, $project, $sort, $limit
-- ALWAYS filter by type when needed (expense/income)
-- Use ₹ symbol for currency
+- Always filter by type when needed (expense/income)
 
 Date Rules:
 - For month queries: use $expr with $month and $year (${currentYear})
 - For day queries: use $gte and $lt with ISO dates
-
-Example:
-[
-  {
-    "$match": {
-      "type": "expense",
-      "$expr": {
-        "$and": [
-          { "$eq": [{ "$month": "$date" }, 8] },
-          { "$eq": [{ "$year": "$date" }, ${currentYear}] }
-        ]
-      }
-    }
-  },
-  {
-    "$group": {
-      "_id": "$category",
-      "total": { "$sum": "$amount" }
-    }
-  }
-]
 `,
-    schema: z.string(),
+    schema: z.object({
+      pipeline: z.array(z.record(z.any())),
+    }),
 
-    func: async (pipelineString) => {
+    func: async ({ pipeline }) => {
       try {
-        if (!pipelineString || typeof pipelineString !== "string") {
-          throw new Error("Invalid pipeline input");
-        }
-
-        // Strict JSON parse
-        let pipeline = JSON.parse(pipelineString);
-
-        // Validate structure
+        // Validate pipeline
         validatePipeline(pipeline);
 
-        // Secure pipeline (force user isolation)
+        // Secure pipeline (user isolation)
         const securePipeline = [
           { $match: { userId: new ObjectId(userId) } },
           ...pipeline,
@@ -114,7 +89,6 @@ Example:
 
         return JSON.stringify(results);
       } catch (error) {
-        console.error("Tool error:", error.message);
         return `Error: ${error.message}`;
       }
     },
@@ -131,13 +105,15 @@ You are a MongoDB aggregation expert.
 
 STRICT RULES:
 - ALWAYS call the tool
-- NEVER answer without tool
-- Output must be a valid JSON pipeline string
+- NEVER answer directly
+- Tool input must be JSON with key "pipeline"
+- Pipeline must use only: $match, $group, $project, $sort, $limit
 - NO explanations
-- ONLY allowed stages: $match, $group, $project, $sort, $limit
-- NEVER generate invalid JSON
 
-Final response must be a clean human-readable answer.
+AFTER receiving tool result:
+- Format output as array of strings like:
+["Food - ₹500", "Transport - ₹200"]
+- Do NOT return raw JSON
 `,
     ],
     ["human", "{input}"],
@@ -170,7 +146,7 @@ Final response must be a clean human-readable answer.
       finalAnswer =
         parsed.length === 0
           ? "No transactions found."
-          : JSON.stringify(parsed, null, 2);
+          : parsed.join("\n"); // 🔥 KEY FIX
     }
   } catch {
     // keep original output

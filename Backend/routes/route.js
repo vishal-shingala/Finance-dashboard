@@ -10,7 +10,9 @@ import { categoryExpense, getAllCategories } from "../controllers/categoryExpens
 // import chatBot from "../controllers/chatbot.controller.js";
 import Agent from "../controllers/agent.controller.js";      
 import getFilteredTransactions from "../controllers/filteredTransactions.controller.js";
+import { createLogger } from "../utils/logger.js";
 const route = Router(); 
+const logger = createLogger("routes");
 
 route.post("/register", register);
 route.post("/login", loginUser);
@@ -24,5 +26,10 @@ route.get("/check-auth", authRoute, checkAuthUser);
 route.get("/register-year", authRoute, registerYear);
 route.post("/chatbot", authRoute, Agent);
 route.post("/filtered-transactions", authRoute, getFilteredTransactions);
+
+logger.info("API routes initialized", {
+	basePath: "/api/v1",
+	routesCount: 11,
+});
 
 export default route;

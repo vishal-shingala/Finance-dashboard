@@ -1,9 +1,13 @@
 import mongoose from "mongoose";
 import Transaction from "../model/transaction.model.js";
 import asynchandler from "../utils/asynchandler.js";
+import { createLogger } from "../utils/logger.js";
+
+const logger = createLogger("last-transaction");
 
 const lastTransaction = asynchandler(async (req, res) => {
   const userId =new mongoose.Types.ObjectId(req.user);
+  logger.info("Last transactions request received", { userId: req.user });
   const transactions = await Transaction.aggregate([
     {
       $match: {
@@ -27,7 +31,10 @@ const lastTransaction = asynchandler(async (req, res) => {
     }
   ]);
 
-  console.log(transactions);
+  logger.info("Last transactions fetched", {
+    userId: req.user,
+    count: transactions.length,
+  });
   return res.status(200).json({
     message: "Previous transactions fetched successfully",
     data: transactions

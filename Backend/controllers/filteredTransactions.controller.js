@@ -1,10 +1,22 @@
 import mongoose from "mongoose";
 import Transaction from "../model/transaction.model.js";
 import asynchandler from "../utils/asynchandler.js";
+import { createLogger } from "../utils/logger.js";
+
+const logger = createLogger("filtered-transactions");
 
 const getFilteredTransactions = asynchandler(async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.user);
   const { startDate, endDate, month, year, category, type } = req.body;
+  logger.info("Filtered transactions request received", {
+    userId: req.user,
+    startDate,
+    endDate,
+    month,
+    year,
+    category,
+    type,
+  });
   const parsedMonth = Number(month);
   const parsedYear = Number(year);
 
@@ -52,6 +64,11 @@ const getFilteredTransactions = asynchandler(async (req, res) => {
       },
     },
   ]);
+
+  logger.info("Filtered transactions fetched", {
+    userId: req.user,
+    count: transactions.length,
+  });
 
   return res.status(200).json({
     message: "Transactions fetched successfully",
