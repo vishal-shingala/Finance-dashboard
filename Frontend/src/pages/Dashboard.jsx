@@ -20,22 +20,30 @@ const Dashboard = () => {
       <div>
         <TransactionCard />
       </div>
-      <div className="flex flex-col justify-around mb-4 w-full md:flex-row">
-        <div className="flex-[0.6]">
-          <div className="w-full max-w-4xl mx-auto bg-dark">
-            <div className="relative w-full h-[300px] md:h-[400px]">
+      <div className="px-2 sm:px-3 md:px-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-stretch">
+          <div className="md:col-span-8">
+            <div className="w-full bg-dark">
+              <div className="relative w-full h-[280px] sm:h-[320px] md:h-[430px] border border-white rounded-xl p-2 sm:p-3">
               <ChartDashboard income={incomeDetail} expense={expenseDetail} />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="flex-[0.3]">
-          <CalendarDashboard />
+          <div className="md:col-span-4 h-full">
+            <CalendarDashboard />
+          </div>
         </div>
       </div>
-      <div className="flex flex-col mx-4 pb-8 justify-around md:flex-row md:gap-3">
-        <PiechartDashboard />
-        <BarChartDashboard />
-        <History />
+      <div className="mx-4 pb-8 grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-3 items-stretch">
+        <div className="w-full h-full">
+          <PiechartDashboard className="w-full md:w-full" />
+        </div>
+        <div className="w-full h-full">
+          <BarChartDashboard />
+        </div>
+        <div className="w-full h-full">
+          <History />
+        </div>
       </div>
       <span className="fixed bottom-5 right-5">
         <Chatbot />

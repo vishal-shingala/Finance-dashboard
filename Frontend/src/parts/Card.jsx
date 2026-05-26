@@ -22,6 +22,8 @@ const Card = ({ type, amount, className }) => {
         group
         animate-fade-in-up
         cursor-pointer
+        border
+        border-white
       `}
     >
       <span className="text-accent text-xs sm:text-sm font-semibold uppercase tracking-wide mb-2 animate-fade-in-up">

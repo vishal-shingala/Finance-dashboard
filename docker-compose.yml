@@ -22,6 +22,7 @@ services:
       - VITE_API_URL=http://backend:3000/api/v1
     volumes:
       - ./Frontend:/FINANCE-DASHBOARD/FRONTEND
+      - /FINANCE-DASHBOARD/FRONTEND/node_modules
     depends_on:
       - backend
     restart: unless-stopped

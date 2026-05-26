@@ -38,7 +38,7 @@ const ChartDashboard = ({ income = [], expense = [], labels: externalLabels }) =
   }, [externalLabels, safeIncome]);
 
   const data = {
-    labels,
+    labels: labels,
     datasets: [
       {
         label: "Expenses",
@@ -70,6 +70,7 @@ const ChartDashboard = ({ income = [], expense = [], labels: externalLabels }) =
       legend: {
         labels: {
           color: "#fff",
+          font: { size: window.innerWidth < 640 ? 11 : 13 },
         },
       },
       tooltip: {
@@ -91,12 +92,13 @@ const ChartDashboard = ({ income = [], expense = [], labels: externalLabels }) =
     },
     scales: {
       x: {
-        ticks: { color: "#fff" },
+        ticks: { color: "#fff", font: { size: window.innerWidth < 640 ? 10 : 12 }, maxTicksLimit: 6 },
         grid: { color: "#444" },
       },
       y: {
         ticks: {
           color: "#fff",
+          font: { size: window.innerWidth < 640 ? 10 : 12 },
           callback: function (value) {
             return `₹${value}`;
           },
