@@ -41,7 +41,9 @@ const FilterBox = ({ onFilterChange }) => {
   };
 
   const currYear = new Date().getFullYear();
-  const yearRange = generateYearRange(registerYear, currYear);
+  const yearRange = Number.isInteger(registerYear) && registerYear > 0
+    ? generateYearRange(registerYear, currYear)
+    : [];
 
   const handleApplyFilters = async () => {
     try {

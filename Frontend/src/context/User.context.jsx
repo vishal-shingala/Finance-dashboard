@@ -23,12 +23,12 @@ const UserContextProvider = ({ children }) => {
   const [categoryExpense, setCategoryExpense] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [logOut, setLogOut] = useState(false);
-  const [registerYear, setRegisterYear] = useState(0);
+  const [registerYear, setRegisterYear] = useState(new Date().getFullYear());
 
   // Chek user is logged in or not
   const checkAuth = async () => {
     try {
-      const { data } = await axios.get("/api/v1/check-auth");
+      const { data } = await axios.get("/check-auth");
       if (data.success) {
         setCurrUser(data.user);
       }
@@ -42,7 +42,7 @@ const UserContextProvider = ({ children }) => {
   const [totalExpense, lastTransactions, categoryTotalExpense] = useMutations([
     {
       mutationFn: async () => {
-        const res = await axios.post("/api/v1/income-expense", {
+        const res = await axios.post("/income-expense", {
           month: selectMonth,
           year: selectYear,
         });
@@ -51,7 +51,7 @@ const UserContextProvider = ({ children }) => {
     },
     {
       mutationFn: async () => {
-        const res = await axios.post("/api/v1/last-transactions", {
+        const res = await axios.post("/last-transactions", {
           month: selectMonth,
           year: selectYear,
         });
@@ -60,7 +60,7 @@ const UserContextProvider = ({ children }) => {
     },
     {
       mutationFn: async () => {
-        const res = await axios.post("/api/v1/category-expense", {
+        const res = await axios.post("/category-expense", {
           month: selectMonth,
           year: selectYear,
         });
@@ -140,9 +140,10 @@ const UserContextProvider = ({ children }) => {
   }, [logOut]);
 
   const funRegisterYear = async () => {
-    const res = await axios.get("/api/v1/register-year");
+    const res = await axios.get("/register-year");
     if (res.data) {
-      setRegisterYear(res.data.year);
+      console.log(res.data);
+      setRegisterYear(Number(res.data.year));
     }
   };
   // User Register Year

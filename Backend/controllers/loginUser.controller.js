@@ -60,8 +60,10 @@ const registerYear = asynchandler(async (req, res) => {
   const userId = req.user;
   logger.info("Register year request received", { userId });
   const year = await User.findById(userId).select("createdAt");
-  logger.info("Register year fetched", { userId, year: year.createdAt.getFullYear() - 1 });
-  res.status(200).json({ year: year.createdAt.getFullYear()-1 });
+  logger.info("User registration date fetched", { userId, createdAt: year });
+  const registerYear = year.createdAt.getFullYear();
+  logger.info("Register year fetched", { userId, year: registerYear });
+  res.status(200).json({ year: registerYear });
 });
 
 export { loginUser, checkAuthUser, registerYear };

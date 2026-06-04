@@ -18,15 +18,26 @@ function generateRangeLoop(start, end) {
 const CalendarDashboard = () => {
   const {selectMonth,setSelectMonth,selectYear,setSelectYear,registerYear} = useContext(UserContext);
   const currYear = new Date().getFullYear()
-  const year = generateRangeLoop(registerYear,currYear)
+  const year = Number.isInteger(registerYear) && registerYear > 0
+    ? generateRangeLoop(registerYear, currYear)
+    : [];
+  
   
   return (
     <div className="bg-dark rounded-xl shadow-lg p-4 sm:p-5 md:p-6 animate-fade-in-up h-full max-h-[500px] border border-white">
       <div className="text-white text-base sm:text-lg md:text-xl font-bold mb-3 sm:mb-4 text-center">
         <select value={selectYear} onChange={(e) => setSelectYear(Number(e.target.value))} name="year" id="year" className="bg-dark text-white rounded-lg p-2 text-sm sm:text-base border border-gray-600 focus:outline-none focus:ring-2 focus:ring-accent">
-          {year.map((val)=>{
-            return <option key={val} value={val} className="bg-dark text-white">{val}</option>
-          })}
+          {year.length > 0 ? (
+            year.map((val) => (
+              <option key={val} value={val} className="bg-dark text-white">
+                {val}
+              </option>
+            ))
+          ) : (
+            <option value={selectYear} className="bg-dark text-white">
+              {selectYear}
+            </option>
+          )}
         </select>
       </div>
       <div className="grid grid-cols-2 gap-1.5 sm:gap-2">  
