@@ -10,7 +10,7 @@ const app = express();
 const logger = createLogger('server');
 
 app.use(cors({
-  origin: "http://localhost:5173", 
+  origin: "https://finance-dashboard-brown-tau.vercel.app", 
   credentials: true
 }));
 app.use(cookieParser())
