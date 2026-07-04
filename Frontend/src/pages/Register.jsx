@@ -40,62 +40,89 @@ const Register = () => {
   };
 
   return (
-    <div className="relative w-full h-screen bg-gray-900 overflow-hidden flex items-center justify-center px-4">
-      {/* Animated Blobs */}
-      <div className="absolute top-0 -left-20 w-[500px] h-[500px] bg-purple-600 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob"></div>
-      <div className="absolute top-0 left-1/2 w-[500px] h-[500px] bg-pink-600 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-2000"></div>
-      <div className="absolute top-1/2 -right-20 w-[500px] h-[500px] bg-blue-600 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-4000"></div>
+    <div className="relative min-h-screen bg-dashboard flex items-center justify-center p-4 overflow-hidden">
+      {/* Background elegant blobs */}
+      <div className="absolute top-0 -left-20 w-[500px] h-[500px] bg-indigo-600/20 rounded-full mix-blend-screen filter blur-[100px] opacity-50 animate-blob"></div>
+      <div className="absolute top-0 left-1/2 w-[500px] h-[500px] bg-blue-600/20 rounded-full mix-blend-screen filter blur-[100px] opacity-50 animate-blob animation-delay-2000"></div>
+      <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-cyan-600/10 rounded-full mix-blend-screen filter blur-[120px] opacity-50 animate-blob animation-delay-4000"></div>
 
       {/* Registration Card */}
-      <div className="z-10 bg-white/10 backdrop-blur-lg shadow-xl rounded-xl p-6 sm:p-8 max-w-sm sm:max-w-md w-full text-white">
-        {/* FinDash Logo */}
-        <h1 className="text-3xl sm:text-5xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 text-transparent bg-clip-text animate-pulse text-center mb-4 sm:mb-6 tracking-widest">
+      <div className="relative z-10 w-full max-w-md bg-dark border border-white/10 rounded-2xl p-6 sm:p-8 shadow-[0_18px_40px_rgba(0,0,0,0.35)] animate-fade-in-up">
+        {/* FinDash Title */}
+        <h1 className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-blue-400 to-indigo-500 text-transparent bg-clip-text text-center mb-2 tracking-wide">
           FinDash
         </h1>
+        <h2 className="text-sm sm:text-base text-gray-400 text-center mb-8">
+          Create your account
+        </h2>
 
-        <h2 className="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6">Create Account</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          {/* Name */}
+          <div>
+            <label className="block text-xs font-medium mb-1.5 text-gray-400 uppercase tracking-wide">
+              Full Name
+            </label>
+            <input
+              type="text"
+              {...register("username", { required: "Name is required" })}
+              className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white text-sm sm:text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition-all duration-300"
+              placeholder="Your Name"
+            />
+            {errors.username && (
+              <p className="text-red-400 text-xs mt-1.5">{errors.username.message}</p>
+            )}
+          </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
-          <label className="block mb-1 text-sm sm:text-base">Name</label>
-          <input
-            type="text"
-            {...register("username", { required: "Name is required" })}
-            className="w-full px-3 sm:px-4 py-2 mb-1 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-purple-500"
-            placeholder="Your Name"
-          />
-          {errors.name && <p className="text-red-400 text-xs sm:text-sm mb-2">{errors.name.message}</p>}
+          {/* Email */}
+          <div>
+            <label className="block text-xs font-medium mb-1.5 text-gray-400 uppercase tracking-wide">
+              Email Address
+            </label>
+            <input
+              type="email"
+              {...register("email", { required: "Email is required" })}
+              className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white text-sm sm:text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition-all duration-300"
+              placeholder="you@example.com"
+            />
+            {errors.email && (
+              <p className="text-red-400 text-xs mt-1.5">{errors.email.message}</p>
+            )}
+          </div>
 
-          <label className="block mb-1 text-sm sm:text-base">Email</label>
-          <input
-            type="email"
-            {...register("email", { required: "Email is required" })}
-            className="w-full px-3 sm:px-4 py-2 mb-1 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-purple-500"
-            placeholder="you@example.com"
-          />
-          {errors.email && <p className="text-red-400 text-xs sm:text-sm mb-2">{errors.email.message}</p>}
+          {/* Password */}
+          <div>
+            <label className="block text-xs font-medium mb-1.5 text-gray-400 uppercase tracking-wide">
+              Password
+            </label>
+            <input
+              type="password"
+              {...register("password", { required: "Password is required" })}
+              className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white text-sm sm:text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition-all duration-300"
+              placeholder="••••••••"
+            />
+            {errors.password && (
+              <p className="text-red-400 text-xs mt-1.5">{errors.password.message}</p>
+            )}
+          </div>
 
-          <label className="block mb-1 text-sm sm:text-base">Password</label>
-          <input
-            type="password"
-            {...register("password", { required: "Password is required" })}
-            className="w-full px-3 sm:px-4 py-2 mb-1 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-purple-500"
-            placeholder="********"
-          />
-          {errors.password && <p className="text-red-400 text-xs sm:text-sm mb-2">{errors.password.message}</p>}
-
+          {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded font-semibold transition duration-300 text-sm sm:text-base mt-3 sm:mt-4"
+            className="w-full py-3 mt-2 rounded-xl text-white font-semibold bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-lg shadow-indigo-500/25 transition-all duration-300 disabled:opacity-50"
             disabled={registerMutation.isPending}
           >
-            {registerMutation.isPending ? "Registering..." : "Register"}
+            {registerMutation.isPending ? "Creating account..." : "Sign Up"}
           </button>
         </form>
 
-        <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-center hover:cursor-pointer">
+        {/* Login link */}
+        <p className="mt-8 text-sm text-center text-gray-400">
           Already have an account?{" "}
-          <span onClick={() => navigate('/login')} className="text-purple-400 hover:underline">
-            Login
+          <span
+            onClick={() => navigate("/login")}
+            className="text-indigo-400 hover:text-indigo-300 hover:underline cursor-pointer font-medium transition-colors"
+          >
+            Sign in
           </span>
         </p>
       </div>

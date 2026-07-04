@@ -45,83 +45,88 @@ const Login = () => {
   };
 
   return (
-    <div className="relative w-full h-screen bg-gray-900 overflow-hidden flex items-center justify-center px-4">
-      {/* Background animation blobs */}
-      <div className="absolute top-0 -left-20 w-[500px] h-[500px] bg-purple-600 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob"></div>
-      <div className="absolute top-0 left-1/2 w-[500px] h-[500px] bg-pink-600 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-2000"></div>
-      <div className="absolute top-1/2 -right-20 w-[500px] h-[500px] bg-blue-600 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-4000"></div>
+    <div className="relative min-h-screen bg-dashboard flex items-center justify-center p-4 overflow-hidden">
+      {/* Background elegant blobs */}
+      <div className="absolute top-0 -left-20 w-[500px] h-[500px] bg-indigo-600/20 rounded-full mix-blend-screen filter blur-[100px] opacity-50 animate-blob"></div>
+      <div className="absolute top-0 left-1/2 w-[500px] h-[500px] bg-blue-600/20 rounded-full mix-blend-screen filter blur-[100px] opacity-50 animate-blob animation-delay-2000"></div>
+      <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-cyan-600/10 rounded-full mix-blend-screen filter blur-[120px] opacity-50 animate-blob animation-delay-4000"></div>
 
       {/* Login Card */}
-      <div className="z-10 bg-white/10 backdrop-blur-lg shadow-xl rounded-xl p-6 sm:p-8 max-w-sm sm:max-w-md w-full text-white">
-        {/* FinDash Animated Title */}
-        <h1 className="text-3xl sm:text-5xl font-extrabold bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 text-transparent bg-clip-text animate-pulse text-center mb-4 sm:mb-6 tracking-widest">
+      <div className="relative z-10 w-full max-w-md bg-dark border border-white/10 rounded-2xl p-6 sm:p-8 shadow-[0_18px_40px_rgba(0,0,0,0.35)] animate-fade-in-up">
+        {/* FinDash Title */}
+        <h1 className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-blue-400 to-indigo-500 text-transparent bg-clip-text text-center mb-2 tracking-wide">
           FinDash
         </h1>
-
-        <h2 className="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6">
-          Welcome Back
+        <h2 className="text-sm sm:text-base text-gray-400 text-center mb-8">
+          Welcome back to your dashboard
         </h2>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)}
-          className="space-y-3 sm:space-y-4"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* Email */}
-          <label className="block mb-2 text-sm">Email</label>
-          <input
-            type="email"
-            className="w-full px-4 py-2 mb-1 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            placeholder="you@example.com"
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^\S+@\S+$/i,
-                message: "Enter a valid email address",
-              },
-            })}
-          />
-          {errors.email && (
-            <p className="text-red-400 text-xs mb-3">{errors.email.message}</p>
-          )}
+          <div>
+            <label className="block text-xs font-medium mb-1.5 text-gray-400 uppercase tracking-wide">
+              Email Address
+            </label>
+            <input
+              type="email"
+              className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white text-sm sm:text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition-all duration-300"
+              placeholder="you@example.com"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^\S+@\S+$/i,
+                  message: "Enter a valid email address",
+                },
+              })}
+            />
+            {errors.email && (
+              <p className="text-red-400 text-xs mt-1.5">{errors.email.message}</p>
+            )}
+          </div>
 
           {/* Password */}
-          <label className="block mb-2 text-sm">Password</label>
-          <input
-            type="password"
-            className="w-full px-4 py-2 mb-1 rounded bg-gray-700 border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            placeholder="********"
-            {...register("password", {
-              required: "Password is required",
-              minLength: {
-                value: 6,
-                message: "Password must be at least 6 characters",
-              },
-            })}
-          />
-          {errors.password && (
-            <p className="text-red-400 text-xs mb-3">
-              {errors.password.message}
-            </p>
-          )}
+          <div>
+            <label className="block text-xs font-medium mb-1.5 text-gray-400 uppercase tracking-wide">
+              Password
+            </label>
+            <input
+              type="password"
+              className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white text-sm sm:text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition-all duration-300"
+              placeholder="••••••••"
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
+              })}
+            />
+            {errors.password && (
+              <p className="text-red-400 text-xs mt-1.5">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
 
           {/* Submit */}
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded font-semibold transition duration-300 disabled:opacity-50"
+            disabled={loginMutation.isPending}
+            className="w-full py-3 mt-2 rounded-xl text-white font-semibold bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-lg shadow-indigo-500/25 transition-all duration-300 disabled:opacity-50"
           >
-            {isSubmitting ? "Logging in..." : "Login"}
+            {loginMutation.isPending ? "Logging in..." : "Login to Dashboard"}
           </button>
         </form>
 
         {/* Register link */}
-        <p className="mt-4 text-sm text-center">
+        <p className="mt-8 text-sm text-center text-gray-400">
           Don’t have an account?{" "}
           <span
             onClick={() => navigate("/register")}
-            className="text-purple-400 hover:underline hover:cursor-pointer"
+            className="text-indigo-400 hover:text-indigo-300 hover:underline cursor-pointer font-medium transition-colors"
           >
-            Register
+            Create one
           </span>
         </p>
       </div>

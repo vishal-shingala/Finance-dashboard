@@ -3,6 +3,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { API_URL } from "../config";
 import toast from "react-hot-toast";
+import { useContext } from "react";
+import { UserContext } from "../context/User.context";
 
 export default function AddTransactionForm({ isOpen, onClose }) {
   const {
@@ -11,6 +13,8 @@ export default function AddTransactionForm({ isOpen, onClose }) {
     formState: { errors },
     reset,
   } = useForm();
+  
+  const { runMutation } = useContext(UserContext);
 
   const queryClient = useQueryClient();
 
@@ -28,7 +32,7 @@ export default function AddTransactionForm({ isOpen, onClose }) {
       });
       reset(); // clear form
       onClose(); 
-      queryClient.invalidateQueries(["transactions"]); // refresh list
+      if (runMutation) runMutation(); // refresh list
     },
     onError: () => {
       toast.error("Failed to add Transaction ❌", {

@@ -177,7 +177,8 @@ const UserContextProvider = ({ children }) => {
     categoryExpense,
     transactions,
     setLogOut,
-    registerYear
+    registerYear,
+    runMutation
   };
 
   return (

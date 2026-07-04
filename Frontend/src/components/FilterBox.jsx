@@ -19,7 +19,7 @@ const FilterBox = ({ onFilterChange }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get("/api/v1/categories");
+        const res = await axios.get("/categories");
         const sortedCategories = res.data.data.sort((a, b) =>
           a.localeCompare(b)
         );
@@ -47,7 +47,7 @@ const FilterBox = ({ onFilterChange }) => {
 
   const handleApplyFilters = async () => {
     try {
-      const res = await axios.post("/api/v1/filtered-transactions", filters);
+      const res = await axios.post("/filtered-transactions", filters);
       setFilteredTransactions(res.data.data);
       const isFilterApplied = Object.values(filters).some((value) => value !== "");
       onFilterChange({
@@ -58,6 +58,14 @@ const FilterBox = ({ onFilterChange }) => {
       console.error("Error fetching transactions:", error);
     }
   };
+
+  // Re-run filter when transactions are updated (e.g., a new one is added)
+  useEffect(() => {
+    const isFilterApplied = Object.values(filters).some((value) => value !== "");
+    if (isFilterApplied) {
+      handleApplyFilters();
+    }
+  }, [transactions]);
 
   const handleFilterChange = (name, value) => {
     setFilters((prev) => ({
@@ -74,6 +82,11 @@ const FilterBox = ({ onFilterChange }) => {
       year: "",
       category: "",
       type: "",
+    });
+    setFilteredTransactions([]);
+    onFilterChange({
+      filteredTransactions: [],
+      isFilterApplied: false,
     });
   };
 
