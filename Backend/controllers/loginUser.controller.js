@@ -40,7 +40,7 @@ const loginUser = async (req, res) => {
     logger.info("Login successful", { userId: user._id, email });
     return res
       .status(200)
-      .json({ message: "LoggedIn Successfully", userDetail });
+      .json({ message: "LoggedIn Successfully", userDetail, token });
   } catch (error) {
     logger.error("Login handler error", { message: error.message });
     return res.status(500).json({ message: "Internal Server Error" });

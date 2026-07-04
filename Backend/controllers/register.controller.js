@@ -32,7 +32,7 @@ const register = asynchandler(async (req, res) => {
   
 
   logger.info("User registered successfully", { userId: user._id, email });
-  res.status(201).json({ message: "User registered successfully.", userDetail });
+  res.status(201).json({ message: "User registered successfully.", userDetail, token });
 });
 
 export default register;

@@ -22,6 +22,7 @@ const Register = () => {
       return res.data;
     },
     onSuccess: (data) => {
+      localStorage.setItem("token", data.token);
       setCurrUser(data); 
       toast.success("Account created successfully!", { position: "top-center" });
       navigate("/"); 

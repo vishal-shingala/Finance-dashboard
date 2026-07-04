@@ -23,6 +23,7 @@ const Login = () => {
     },
     onSuccess: (data) => {
       console.log("Login successful:", data);
+      localStorage.setItem("token", data.token);
       setCurrUser(data);
       toast.success("Login Successfully", { position: "top-center" });
       navigate("/"); // example navigation

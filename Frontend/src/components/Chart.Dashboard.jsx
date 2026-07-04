@@ -108,7 +108,19 @@ const ChartDashboard = ({ income = [], expense = [], labels: externalLabels }) =
     },
   };
 
-  return <Line data={data} options={options} />;
+  const hasData = safeIncome.some(v => v > 0) || safeExpense.some(v => v > 0);
+
+  return (
+    <div className="w-full h-full flex flex-col justify-center">
+      {hasData ? (
+        <Line data={data} options={options} />
+      ) : (
+        <div className="flex items-center justify-center text-gray-400 text-sm sm:text-base h-full">
+          Expense is not done
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default ChartDashboard;

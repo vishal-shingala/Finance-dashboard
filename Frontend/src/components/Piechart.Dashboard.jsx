@@ -53,9 +53,13 @@ const PiechartDashboard = ({ data: externalData, className = "" }) => {
 
   return (
     <div
-      className={`bg-dark rounded-xl w-full md:w-[30rem] h-[200px] sm:h-[250px] md:h-[25rem] shadow-lg p-3 sm:p-4 md:p-6 animate-fade-in-up flex flex-col items-center border border-white ${className}`}
+      className={`bg-dark rounded-xl w-full md:w-[30rem] h-[200px] sm:h-[250px] md:h-[25rem] shadow-lg p-3 sm:p-4 md:p-6 animate-fade-in-up flex flex-col items-center justify-center border border-white ${className}`}
     >
-      <Pie data={chartData} options={options} />
+      {(!income && !expense) ? (
+        <div className="text-gray-400 text-sm sm:text-base">Expense is not done</div>
+      ) : (
+        <Pie data={chartData} options={options} />
+      )}
     </div>
   );
 };

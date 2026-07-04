@@ -76,9 +76,17 @@ const BarChartDashboard = () => {
   };
 
   return (
-    <div className="w-full h-[200px] sm:h-[300px] md:h-[400px] bg-dark p-2 sm:p-3 md:p-4 rounded-lg shadow-md border border-white">
+    <div className="w-full h-[200px] sm:h-[300px] md:h-[400px] bg-dark p-2 sm:p-3 md:p-4 rounded-lg shadow-md border border-white flex flex-col">
       <h2 className="text-white text-sm sm:text-base md:text-lg font-bold mb-2">Category-wise Expenses</h2>
-      <Bar data={data} options={options} />
+      {categoryExpense && categoryExpense.length > 0 ? (
+        <div className="flex-grow">
+          <Bar data={data} options={options} />
+        </div>
+      ) : (
+        <div className="flex-grow flex items-center justify-center text-gray-400 text-sm sm:text-base">
+          Expense is not done
+        </div>
+      )}
     </div>
   );
 };

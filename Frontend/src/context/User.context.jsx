@@ -9,6 +9,14 @@ import toast from "react-hot-toast";
 axios.defaults.baseURL = API_URL.replace(/\/$/, "");
 axios.defaults.withCredentials = true;
 
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 const UserContext = createContext();
 
 const UserContextProvider = ({ children }) => {
@@ -129,6 +137,7 @@ const UserContextProvider = ({ children }) => {
       const logOutPage = async () => {
         try {
           await logOut();
+          localStorage.removeItem("token");
           setCurrUser(null);
           toast.success("Logged out successfully");
         } catch (err) {
